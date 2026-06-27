@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X, Phone, LogIn, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -16,6 +17,7 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -90,6 +92,17 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
+            {session ? (
+              <Link href="/admin" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5">
+                <LayoutDashboard className="w-3.5 h-3.5" />
+                Admin
+              </Link>
+            ) : (
+              <Link href="/login" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5">
+                <LogIn className="w-3.5 h-3.5" />
+                Login
+              </Link>
+            )}
             <Link href="/contact">
               <Button
                 size="sm"
@@ -142,6 +155,23 @@ export default function Navbar() {
                   >
                     <Phone className="w-3.5 h-3.5" /> 02-561-4209
                   </a>
+                  {session ? (
+                    <Link
+                      href="/admin"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <LayoutDashboard className="w-3.5 h-3.5" /> Admin Panel
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <LogIn className="w-3.5 h-3.5" /> Admin Login
+                    </Link>
+                  )}
                 </div>
               </nav>
             </motion.div>
