@@ -1,26 +1,156 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
   --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Classic Furniture — Warm Cream & Antique Gold */
+:root {
+  --background: oklch(0.98 0.014 82);
+  --foreground: oklch(0.14 0.028 52);
+  --card: oklch(0.995 0.007 80);
+  --card-foreground: oklch(0.14 0.028 52);
+  --popover: oklch(0.995 0.007 80);
+  --popover-foreground: oklch(0.14 0.028 52);
+  --primary: oklch(0.60 0.115 72);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.94 0.020 82);
+  --secondary-foreground: oklch(0.14 0.028 52);
+  --muted: oklch(0.93 0.016 82);
+  --muted-foreground: oklch(0.50 0.032 60);
+  --accent: oklch(0.36 0.075 52);
+  --accent-foreground: oklch(0.98 0.010 82);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.87 0.020 78);
+  --input: oklch(0.93 0.016 82);
+  --ring: oklch(0.60 0.115 72);
+  --chart-1: oklch(0.60 0.115 72);
+  --chart-2: oklch(0.50 0.090 60);
+  --chart-3: oklch(0.36 0.075 52);
+  --chart-4: oklch(0.68 0.100 88);
+  --chart-5: oklch(0.72 0.080 100);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.16 0.035 52);
+  --sidebar-foreground: oklch(0.92 0.010 80);
+  --sidebar-primary: oklch(0.60 0.115 72);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.22 0.040 52);
+  --sidebar-accent-foreground: oklch(0.92 0.010 80);
+  --sidebar-border: oklch(0.26 0.040 52);
+  --sidebar-ring: oklch(0.60 0.115 72);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply scroll-smooth;
+    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), Georgia, serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Gold gradient text */
+.gold-text {
+  background: linear-gradient(135deg, oklch(0.62 0.13 76), oklch(0.54 0.10 62));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtle warm glow for CTA buttons */
+.gold-glow {
+  box-shadow: 0 0 40px oklch(0.60 0.115 72 / 0.30);
+}
+
+/* Ornament divider */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.ornament::before,
+.ornament::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, oklch(0.60 0.115 72 / 0.4), transparent);
+}
+
+/* Subtle linen texture background for section accents */
+.linen-bg {
+  background-color: oklch(0.94 0.020 82);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      oklch(0.90 0.024 78 / 0.35) 0px,
+      transparent 1px,
+      transparent 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      oklch(0.90 0.024 78 / 0.20) 0px,
+      transparent 1px,
+      transparent 4px
+    );
+}
+
+/* Hero damask pattern */
+.damask-bg {
+  background-color: oklch(0.16 0.032 52);
+  background-image: radial-gradient(
+    ellipse 80% 60% at 50% 40%,
+    oklch(0.25 0.045 60 / 0.6) 0%,
+    transparent 70%
+  );
 }
