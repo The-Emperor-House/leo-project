@@ -100,9 +100,10 @@
   }
 }
 
-/* Thai locale: use IBM Plex Sans Thai (หัวตัด) for all headings */
+/* Thai locale: use IBM Plex Sans Thai (หัวตัด) for all text */
 [data-locale="th"] {
   --font-heading: var(--font-thai);
+  font-family: var(--font-thai), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Gold gradient text */
