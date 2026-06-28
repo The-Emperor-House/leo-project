@@ -100,6 +100,11 @@
   }
 }
 
+/* Thai locale: use IBM Plex Sans Thai (หัวตัด) for all headings */
+[data-locale="th"] {
+  --font-heading: var(--font-thai);
+}
+
 /* Gold gradient text */
 .gold-text {
   background: linear-gradient(135deg, oklch(0.62 0.13 76), oklch(0.54 0.10 62));
