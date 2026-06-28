@@ -45,7 +45,7 @@ export default function ContactPage() {
           <motion.p initial={{ opacity: 0, y: 20 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="text-primary text-xs font-semibold uppercase tracking-[0.25em] mb-4">
             {t("label")}
           </motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-5xl md:text-6xl font-light mb-5 leading-tight text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-5xl md:text-6xl font-light mb-5 leading-tight text-foreground">
             {t("heading")}{" "}
             <span className="gold-text font-semibold italic">{t("heading2")}</span>
           </motion.h1>
@@ -61,7 +61,7 @@ export default function ContactPage() {
           {/* Info */}
           <motion.div initial={{ opacity: 0, x: -30 }} animate={formInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.7 }} className="lg:col-span-2 flex flex-col gap-6">
             <div>
-              <h2 className="text-3xl font-light mb-2 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>{t("info_heading")}</h2>
+              <h2 className="text-3xl font-light mb-2 text-foreground">{t("info_heading")}</h2>
               <div className="w-8 h-0.5 bg-primary/50 rounded mb-5" />
               <p className="text-sm text-muted-foreground leading-relaxed">{t("info_desc")}</p>
             </div>
@@ -97,12 +97,12 @@ export default function ContactPage() {
               {submitted ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
                   <CheckCircle className="w-16 h-16 text-primary mb-5" />
-                  <h3 className="text-3xl font-light mb-3 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>{t("success_heading")}</h3>
+                  <h3 className="text-3xl font-light mb-3 text-foreground">{t("success_heading")}</h3>
                   <p className="text-muted-foreground leading-relaxed max-w-sm">{t("success_desc")}</p>
                 </div>
               ) : (
                 <>
-                  <h3 className="text-2xl font-light mb-1 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>{t("form_heading")}</h3>
+                  <h3 className="text-2xl font-light mb-1 text-foreground">{t("form_heading")}</h3>
                   <p className="text-sm text-muted-foreground mb-7">{t("form_sub")}</p>
                   <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
