@@ -16,10 +16,10 @@ function TimelineItem({ year, title, desc, delay }: { year: string; title: strin
   return (
     <motion.div ref={ref} initial={{ opacity: 0, x: -20 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay, duration: 0.55 }} className="relative pl-16">
       <div className="absolute left-0 w-12 h-12 rounded-full bg-card border-2 border-primary/40 flex items-center justify-center">
-        <span className="text-[10px] font-bold text-primary text-center leading-tight px-1" style={{ fontFamily: "var(--font-heading)" }}>{year}</span>
+        <span className="text-[10px] font-bold text-primary text-center leading-tight px-1 font-display">{year}</span>
       </div>
       <div className="rounded-2xl border border-border bg-card p-6">
-        <h3 className="text-xl font-medium text-foreground mb-2" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+        <h3 className="text-xl font-medium text-foreground mb-2">{title}</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
       </div>
     </motion.div>
@@ -35,7 +35,7 @@ function CraftCard({ icon: Icon, title, desc, delay }: { icon: React.ElementType
         <Icon className="w-5 h-5 text-primary" />
       </div>
       <div>
-        <h3 className="text-lg font-medium mb-2 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+        <h3 className="text-lg font-medium mb-2 text-foreground">{title}</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
       </div>
     </motion.div>
@@ -78,7 +78,7 @@ export default function AboutPage() {
           <motion.p initial={{ opacity: 0, y: 20 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="text-primary text-xs font-semibold uppercase tracking-[0.25em] mb-4">
             {t("hero_label")}
           </motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-5xl md:text-6xl font-light mb-5 leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-5xl md:text-6xl font-light mb-5 leading-tight">
             {t("hero_heading")}{" "}
             <span className="gold-text font-semibold italic">{t("hero_heading2")}</span>
           </motion.h1>
@@ -95,7 +95,7 @@ export default function AboutPage() {
             <Image src={`${BASE}/2014/10/leoAngelo-02_PreeDee003-w960.jpg`} alt="LeoAngelo Classic Furniture" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 text-white">
-              <p className="text-xl italic font-light leading-snug" style={{ fontFamily: "var(--font-heading)" }}>
+              <p className="text-xl italic font-light leading-snug font-display">
                 &ldquo;Your home should tell the story of who you are.&rdquo;
               </p>
               <p className="text-sm mt-2 text-white/70">— LeoAngelo, Founder</p>
@@ -104,7 +104,7 @@ export default function AboutPage() {
 
           <motion.div initial={{ opacity: 0, x: 30 }} animate={storyInView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.15, duration: 0.7 }}>
             <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-4">{t("story_label")}</p>
-            <h2 className="text-4xl md:text-5xl font-light mb-6 leading-tight text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+            <h2 className="text-4xl md:text-5xl font-light mb-6 leading-tight text-foreground">
               <span className="gold-text font-semibold italic">{t("story_heading")}</span>
             </h2>
             <div className="w-10 h-0.5 bg-primary/50 rounded mb-6" />
@@ -120,7 +120,7 @@ export default function AboutPage() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-14">
             <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-3">{t("timeline_label")}</p>
-            <h2 className="text-4xl md:text-5xl font-light text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+            <h2 className="text-4xl md:text-5xl font-light text-foreground">
               <span className="gold-text font-semibold italic">{t("timeline_heading")}</span>
             </h2>
           </div>
@@ -143,7 +143,7 @@ export default function AboutPage() {
               <motion.p initial={{ opacity: 0, y: 20 }} animate={craftInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-4">
                 {t("craft_label")}
               </motion.p>
-              <motion.h2 initial={{ opacity: 0, y: 30 }} animate={craftInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-4xl md:text-5xl font-light mb-6 leading-tight text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+              <motion.h2 initial={{ opacity: 0, y: 30 }} animate={craftInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-4xl md:text-5xl font-light mb-6 leading-tight text-foreground">
                 <span className="gold-text font-semibold italic">{t("craft_heading")}</span>
               </motion.h2>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={craftInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2, duration: 0.55 }} className="text-muted-foreground leading-relaxed mb-4">
@@ -166,7 +166,7 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="py-20 px-6 bg-secondary/40 border-t border-border">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-4xl font-light mb-4 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+          <h2 className="text-4xl font-light mb-4 text-foreground">
             {t("cta_heading")}
           </h2>
           <p className="text-muted-foreground mb-8 leading-relaxed">{t("cta_desc")}</p>

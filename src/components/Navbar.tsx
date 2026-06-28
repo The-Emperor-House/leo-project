@@ -62,7 +62,7 @@ export default function Navbar() {
               <Image src="/logo.jpg" alt="LeoAngelo" fill className="object-cover" sizes="40px" />
             </div>
             <div className="flex flex-col leading-none">
-              <span className="text-lg font-bold tracking-wide gold-text" style={{ fontFamily: "var(--font-heading)" }}>
+              <span className="text-lg font-bold tracking-wide gold-text font-display">
                 LeoAngelo
               </span>
               <span className="text-[9px] tracking-[0.22em] text-muted-foreground uppercase font-normal mt-0.5">
@@ -78,7 +78,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest"
-                style={{ letterSpacing: "0.12em", fontFamily: "var(--font-body)" }}
+                style={{ letterSpacing: "0.12em" }}
               >
                 {link.label}
               </Link>

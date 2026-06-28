@@ -30,7 +30,7 @@ export default function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2.5 mb-5">
               <Image src="/logo.jpg" alt="LeoAngelo" width={32} height={32} className="rounded-lg object-cover" />
-              <span className="text-xl font-semibold tracking-wider gold-text" style={{ fontFamily: "var(--font-heading)" }}>LeoAngelo</span>
+              <span className="text-xl font-semibold tracking-wider gold-text font-display">LeoAngelo</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-xs">{t("desc")}</p>
             <ul className="space-y-2">
@@ -59,7 +59,7 @@ export default function Footer() {
 
           {/* Collections */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-[0.18em] mb-5 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>{t("collections")}</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-[0.18em] mb-5 text-foreground">{t("collections")}</h4>
             <ul className="space-y-3">
               {collections.map((item) => (
                 <li key={item.href}>
@@ -71,7 +71,7 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-[0.18em] mb-5 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>{t("company")}</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-[0.18em] mb-5 text-foreground">{t("company")}</h4>
             <ul className="space-y-3">
               {company.map((item) => (
                 <li key={item.href}>
@@ -80,7 +80,7 @@ export default function Footer() {
               ))}
             </ul>
             <div className="mt-8 p-4 rounded-xl bg-secondary/60 border border-border">
-              <p className="text-xs text-muted-foreground italic leading-relaxed" style={{ fontFamily: "var(--font-heading)" }}>
+              <p className="text-xs text-muted-foreground italic leading-relaxed font-display">
                 &ldquo;{t("quote")}&rdquo;
               </p>
             </div>

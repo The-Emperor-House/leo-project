@@ -31,7 +31,7 @@ function CategorySection({ id, label, labelSub, headline, desc, items, image, re
         <motion.div initial={{ opacity: 0, x: reversed ? -30 : 30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.15, duration: 0.7 }} className={reversed ? "lg:col-start-1 lg:row-start-1" : ""}>
           <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-1">{label}</p>
           <p className="text-muted-foreground text-sm mb-4">{labelSub}</p>
-          <h2 className="text-4xl md:text-5xl font-light mb-5 leading-tight text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+          <h2 className="text-4xl md:text-5xl font-light mb-5 leading-tight text-foreground">
             <span className="gold-text font-semibold italic">{headline}</span>
           </h2>
           <div className="w-10 h-0.5 bg-primary/50 rounded mb-6" />
@@ -62,7 +62,7 @@ function ExtraCard({ title, titleSub, desc, bg, delay }: { title: string; titleS
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay, duration: 0.55 }} className={`rounded-2xl border border-border p-10 ${bg}`}>
       <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-2">{title}</p>
-      <h3 className="text-3xl font-light text-foreground mb-4" style={{ fontFamily: "var(--font-heading)" }}>{titleSub}</h3>
+      <h3 className="text-3xl font-light text-foreground mb-4">{titleSub}</h3>
       <p className="text-muted-foreground leading-relaxed mb-6">{desc}</p>
       <Link href="/contact">
         <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/5">
@@ -95,7 +95,7 @@ export default function CollectionsPage() {
           <motion.p initial={{ opacity: 0, y: 20 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="text-primary text-xs font-semibold uppercase tracking-[0.25em] mb-4">
             {t("label")}
           </motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-5xl md:text-6xl font-light mb-5 leading-tight text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+          <motion.h1 initial={{ opacity: 0, y: 30 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-5xl md:text-6xl font-light mb-5 leading-tight text-foreground">
             <span className="gold-text font-semibold italic">{t("heading")}</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={heroInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2, duration: 0.55 }} className="text-muted-foreground leading-relaxed max-w-xl mx-auto">
@@ -113,7 +113,7 @@ export default function CollectionsPage() {
             <motion.p initial={{ opacity: 0, y: 20 }} animate={extraInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-3">
               {t("extra_label")}
             </motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={extraInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.08, duration: 0.6 }} className="text-4xl md:text-5xl font-light text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={extraInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.08, duration: 0.6 }} className="text-4xl md:text-5xl font-light text-foreground">
               {t("lighting_title")} &amp;{" "}
               <span className="gold-text font-semibold italic">{t("ornament_title")}</span>
             </motion.h2>
@@ -128,7 +128,7 @@ export default function CollectionsPage() {
       {/* CTA */}
       <section className="py-20 px-6 damask-bg text-white border-t border-border">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-4xl font-light mb-4" style={{ fontFamily: "var(--font-heading)" }}>{t("custom_heading")}</h2>
+          <h2 className="text-4xl font-light mb-4">{t("custom_heading")}</h2>
           <p className="text-white/65 mb-3 leading-relaxed">{t("custom_desc")}</p>
           <p className="text-primary font-semibold mb-8">{t("custom_phone")}</p>
           <Link href="/contact">

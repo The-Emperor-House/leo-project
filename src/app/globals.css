@@ -84,6 +84,25 @@
   --sidebar-ring: oklch(0.60 0.115 72);
 }
 
+/* ─── Font tokens ────────────────────────────────────────────────────────────
+   Two semantic tokens used everywhere in JSX:
+     font-display  →  headings, brand name, pull-quotes
+     font-ui       →  body, nav, buttons, labels
+   Change locale font: edit [data-locale="th"] block only.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --font-display: var(--font-heading), Georgia, serif;
+  --font-ui:      var(--font-body), system-ui, sans-serif;
+}
+
+/* Thai locale — IBM Plex Sans Thai for everything, no synthetic italic */
+[data-locale="th"] {
+  --font-display: var(--font-thai), sans-serif;
+  --font-ui:      var(--font-thai), sans-serif;
+  font-family:    var(--font-thai), sans-serif;
+  font-style:     normal;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -93,12 +112,16 @@
   }
   html {
     @apply scroll-smooth;
-    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-ui);
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading), Georgia, serif;
+    font-family: var(--font-display);
   }
 }
+
+/* Utility classes — use these in JSX, never inline style for fonts */
+.font-display { font-family: var(--font-display); }
+.font-ui      { font-family: var(--font-ui); }
 
 /* Gold gradient text */
 .gold-text {

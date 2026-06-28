@@ -32,7 +32,7 @@ function CollectionCard({ title, subtitle, image, href, delay }: { title: string
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-medium text-foreground" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+          <h3 className="text-xl font-medium text-foreground font-display">{title}</h3>
           <ChevronRight className="w-4 h-4 text-primary transition-transform group-hover:translate-x-1" />
         </div>
       </Link>
@@ -48,7 +48,7 @@ function ValueCard({ icon: Icon, title, desc, delay }: { icon: React.ElementType
       <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5">
         <Icon className="w-6 h-6 text-primary" />
       </div>
-      <h3 className="text-xl font-medium mb-3 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>{title}</h3>
+      <h3 className="text-xl font-medium mb-3 text-foreground font-display">{title}</h3>
       <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
     </motion.div>
   );
@@ -60,7 +60,7 @@ function TestimonialCard({ text, author, role, delay }: { text: string; author: 
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay, duration: 0.5 }} className="rounded-2xl border border-border bg-card p-7 flex flex-col gap-4">
       <div className="flex gap-1">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="w-4 h-4 fill-primary text-primary" />)}</div>
-      <p className="text-base italic text-foreground/80 leading-relaxed flex-1" style={{ fontFamily: "var(--font-heading)" }}>&ldquo;{text}&rdquo;</p>
+      <p className="text-base italic text-foreground/80 leading-relaxed flex-1 font-display">&ldquo;{text}&rdquo;</p>
       <div>
         <p className="font-semibold text-sm text-foreground">{author}</p>
         <p className="text-xs text-muted-foreground">{role}</p>
@@ -113,10 +113,10 @@ export default function Home() {
           <motion.div custom={0} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="ornament text-xs tracking-[0.3em] uppercase text-primary font-medium mb-8 max-w-xs mx-auto">
             {t("hero_label")}
           </motion.div>
-          <motion.h1 custom={1} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-6xl md:text-8xl font-light tracking-wide mb-4 leading-none" style={{ fontFamily: "var(--font-heading)" }}>
+          <motion.h1 custom={1} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-6xl md:text-8xl font-light tracking-wide mb-4 leading-none">
             {t("hero_h1")}
           </motion.h1>
-          <motion.h1 custom={2} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-5xl md:text-7xl font-semibold italic tracking-wide mb-8 leading-none gold-text" style={{ fontFamily: "var(--font-heading)" }}>
+          <motion.h1 custom={2} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-5xl md:text-7xl font-semibold italic tracking-wide mb-8 leading-none gold-text">
             {t("hero_h2")}
           </motion.h1>
           <motion.p custom={3} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-lg text-white/65 max-w-xl mx-auto mb-12 leading-relaxed">
@@ -149,7 +149,7 @@ export default function Home() {
             <motion.p initial={{ opacity: 0, y: 20 }} animate={collectionsInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="text-primary text-xs font-semibold uppercase tracking-[0.2em] text-center mb-3">
               {t("col_label")}
             </motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={collectionsInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.08, duration: 0.6 }} className="text-4xl md:text-5xl font-light text-center mb-14 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={collectionsInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.08, duration: 0.6 }} className="text-4xl md:text-5xl font-light text-center mb-14 text-foreground">
               <span className="gold-text font-semibold italic">{t("col_heading")}</span>
             </motion.h2>
           </div>
@@ -173,7 +173,7 @@ export default function Home() {
             <motion.p initial={{ opacity: 0, y: 20 }} animate={aboutInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-4">
               {t("about_label")}
             </motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={aboutInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-4xl md:text-5xl font-light mb-6 leading-tight text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={aboutInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-4xl md:text-5xl font-light mb-6 leading-tight text-foreground">
               <span className="gold-text font-semibold italic">{t("about_heading")}</span>
             </motion.h2>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={aboutInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.2, duration: 0.55 }} className="text-muted-foreground leading-relaxed mb-5">{t("about_desc1")}</motion.p>
@@ -190,7 +190,7 @@ export default function Home() {
             <Image src={`${BASE}/2014/10/leoAngelo-02_PreeDee020-w960.jpg`} alt="LeoAngelo Showroom" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
             <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-transparent" />
             <div className="absolute bottom-5 right-5 bg-card/90 backdrop-blur-sm rounded-2xl border border-border p-5 text-center">
-              <p className="text-3xl font-semibold gold-text" style={{ fontFamily: "var(--font-heading)" }}>12+</p>
+              <p className="text-3xl font-semibold gold-text font-display">12+</p>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">{t("about_stat")}</p>
             </div>
           </motion.div>
@@ -201,7 +201,7 @@ export default function Home() {
       <section className="py-28 px-6">
         <div className="max-w-6xl mx-auto">
           <div ref={valuesRef}>
-            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={valuesInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.08, duration: 0.6 }} className="text-4xl md:text-5xl font-light text-center mb-14 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={valuesInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.08, duration: 0.6 }} className="text-4xl md:text-5xl font-light text-center mb-14 text-foreground">
               LeoAngelo
             </motion.h2>
           </div>
@@ -218,7 +218,7 @@ export default function Home() {
             <motion.p initial={{ opacity: 0, y: 20 }} animate={testimonialsInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="text-primary text-xs font-semibold uppercase tracking-[0.2em] text-center mb-3">
               {t("testi_label")}
             </motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={testimonialsInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.08, duration: 0.6 }} className="text-4xl md:text-5xl font-light text-center mb-14 text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={testimonialsInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.08, duration: 0.6 }} className="text-4xl md:text-5xl font-light text-center mb-14 text-foreground">
               <span className="gold-text font-semibold italic">{t("testi_heading")}</span>
             </motion.h2>
           </div>
@@ -233,7 +233,7 @@ export default function Home() {
       {/* CTA */}
       <section className="py-28 px-6 damask-bg text-white">
         <div ref={ctaRef} className="max-w-3xl mx-auto text-center">
-          <motion.h2 initial={{ opacity: 0, y: 30 }} animate={ctaInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-4xl md:text-5xl font-light mb-4 leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
+          <motion.h2 initial={{ opacity: 0, y: 30 }} animate={ctaInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.6 }} className="text-4xl md:text-5xl font-light mb-4 leading-tight">
             {t("cta_heading")}{" "}
             <span className="gold-text font-semibold italic">Real Italy Furniture</span>
           </motion.h2>
