@@ -105,6 +105,10 @@
   --font-heading: var(--font-thai);
   font-family: var(--font-thai), ui-sans-serif, system-ui, sans-serif;
 }
+/* IBM Plex Sans Thai has no italic variant — disable synthetic italic */
+[data-locale="th"] .italic {
+  font-style: normal;
+}
 
 /* Gold gradient text */
 .gold-text {
