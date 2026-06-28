@@ -120,8 +120,9 @@ export default function Home() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[oklch(0.10_0.022_52)]">
+        {/* Carousel — contained so ornate frames show in full */}
+        <div className="absolute inset-0 flex items-center justify-center">
           <AnimatePresence initial={false}>
             <motion.div
               key={slide}
@@ -129,20 +130,23 @@ export default function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.2 }}
-              className="absolute inset-0"
+              className="absolute inset-0 flex items-center justify-center p-6 md:p-16"
             >
-              <Image
-                src={SLIDES[slide]}
-                alt="LeoAngelo Classic Furniture"
-                fill
-                className="object-cover object-center"
-                priority={slide === 0}
-                sizes="100vw"
-              />
+              <div className="relative w-full max-w-5xl" style={{ aspectRatio: "940/500" }}>
+                <Image
+                  src={SLIDES[slide]}
+                  alt="LeoAngelo Classic Furniture"
+                  fill
+                  className="object-contain"
+                  priority={slide === 0}
+                  sizes="(max-width: 1280px) 100vw, 1280px"
+                />
+              </div>
             </motion.div>
           </AnimatePresence>
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50" />
+          {/* Darken edges so text reads clearly */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-transparent to-black/75 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
         </div>
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-primary/10 blur-[140px] pointer-events-none" />
 
