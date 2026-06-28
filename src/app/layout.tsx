@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Inter } from "next/font/google";
+import { Bodoni_Moda, Inter, IBM_Plex_Sans_Thai } from "next/font/google";
 import SessionProvider from "@/components/SessionProvider";
 import "./globals.css";
 
@@ -11,6 +11,13 @@ const bodoni = Bodoni_Moda({
   display: "swap",
 });
 
+const ibmPlexSansThai = IBM_Plex_Sans_Thai({
+  variable: "--font-thai",
+  subsets: ["thai"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
 const inter = Inter({
   variable: "--font-body",
   subsets: ["latin"],
@@ -19,20 +26,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "LeoAngelo — Real Italy Furniture | เฟอร์นิเจอร์คลาสสิคจากอิตาลี",
-  description:
-    "บริษัท ลีโอ แอนเจลโล่ จำกัด ผู้นำเข้าเฟอร์นิเจอร์สไตล์คลาสสิคแท้จากอิตาลี งานทำมือ (Handmade) คุณภาพสูงจากช่างมืออาชีพชาวอิตาลี สอบถาม 02-561-4209",
+  title: "LeoAngelo — Real Italy Furniture",
+  description: "Authentic classic Italian handmade furniture. LeoAngelo Co., Ltd. Tel. 02-561-4209",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="th"
-      className={`${bodoni.variable} ${inter.variable} h-full antialiased`}
+      lang="en"
+      className={`${bodoni.variable} ${ibmPlexSansThai.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <SessionProvider>{children}</SessionProvider>

@@ -2,22 +2,25 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, LogIn, LayoutDashboard } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import Image from "next/image";
-
-const links = [
-  { label: "Collections", href: "/collections" },
-  { label: "About Us", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
+import LangSwitcher from "./LangSwitcher";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { data: session } = useSession();
+  const t = useTranslations("nav");
+
+  const links = [
+    { label: t("collections"), href: "/collections" },
+    { label: t("about"), href: "/about" },
+    { label: t("contact"), href: "/contact" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -31,14 +34,14 @@ export default function Navbar() {
       <div className="w-full bg-accent text-accent-foreground text-xs py-2 px-6 flex items-center justify-center gap-4 z-50 relative">
         <Phone className="w-3 h-3 shrink-0" />
         <span className="tracking-wider">
-          สอบถามข้อมูล&nbsp;
+          {t("bar_phone")}&nbsp;
           <a href="tel:025614209" className="font-semibold hover:underline">
             02-561-4209
           </a>
-          &nbsp;·&nbsp;จ.–ศ. 10:00–18:00 น.
+          &nbsp;·&nbsp;{t("bar_hours")}
         </span>
         <span className="hidden sm:inline text-accent-foreground/60">|</span>
-        <span className="hidden sm:inline tracking-wider">Real Italy Furniture · Handmade</span>
+        <span className="hidden sm:inline tracking-wider">{t("bar_tag")}</span>
       </div>
 
       {/* ── Main Navbar ───────────────────────────────────────── */}
@@ -56,19 +59,10 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-border/60 shrink-0 shadow-sm">
-              <Image
-                src="/logo.jpg"
-                alt="LeoAngelo"
-                fill
-                className="object-cover"
-                sizes="40px"
-              />
+              <Image src="/logo.jpg" alt="LeoAngelo" fill className="object-cover" sizes="40px" />
             </div>
             <div className="flex flex-col leading-none">
-              <span
-                className="text-lg font-bold tracking-wide gold-text"
-                style={{ fontFamily: "var(--font-heading)" }}
-              >
+              <span className="text-lg font-bold tracking-wide gold-text" style={{ fontFamily: "var(--font-heading)" }}>
                 LeoAngelo
               </span>
               <span className="text-[9px] tracking-[0.22em] text-muted-foreground uppercase font-normal mt-0.5">
@@ -92,34 +86,27 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
+            <LangSwitcher />
             {session ? (
-              <Link href="/admin" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5">
+              <a href="/admin" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5">
                 <LayoutDashboard className="w-3.5 h-3.5" />
-                Admin
-              </Link>
+                {t("admin")}
+              </a>
             ) : (
-              <Link href="/login" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5">
+              <a href="/login" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5">
                 <LogIn className="w-3.5 h-3.5" />
-                Login
-              </Link>
+                {t("login")}
+              </a>
             )}
             <Link href="/contact">
-              <Button
-                size="sm"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 tracking-wider gold-glow text-xs"
-                style={{ letterSpacing: "0.08em" }}
-              >
-                Visit Showroom
+              <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 tracking-wider gold-glow text-xs" style={{ letterSpacing: "0.08em" }}>
+                {t("visit_showroom")}
               </Button>
             </Link>
           </div>
 
           {/* Mobile hamburger */}
-          <button
-            className="md:hidden text-foreground"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle menu"
-          >
+          <button className="md:hidden text-foreground" onClick={() => setMenuOpen((v) => !v)} aria-label="Toggle menu">
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
@@ -134,43 +121,26 @@ export default function Navbar() {
             >
               <nav className="flex flex-col gap-5 pt-4">
                 {links.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors tracking-widest uppercase text-sm"
-                    onClick={() => setMenuOpen(false)}
-                  >
+                  <Link key={link.href} href={link.href} className="text-muted-foreground hover:text-foreground transition-colors tracking-widest uppercase text-sm" onClick={() => setMenuOpen(false)}>
                     {link.label}
                   </Link>
                 ))}
-                <div className="pt-2 border-t border-border space-y-2">
+                <div className="pt-2 border-t border-border space-y-3">
+                  <div className="flex justify-center py-1"><LangSwitcher /></div>
                   <Link href="/contact" onClick={() => setMenuOpen(false)}>
-                    <Button className="bg-primary hover:bg-primary/90 w-full tracking-wider">
-                      Visit Showroom
-                    </Button>
+                    <Button className="bg-primary hover:bg-primary/90 w-full tracking-wider">{t("visit_showroom")}</Button>
                   </Link>
-                  <a
-                    href="tel:025614209"
-                    className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
+                  <a href="tel:025614209" className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
                     <Phone className="w-3.5 h-3.5" /> 02-561-4209
                   </a>
                   {session ? (
-                    <Link
-                      href="/admin"
-                      onClick={() => setMenuOpen(false)}
-                      className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <LayoutDashboard className="w-3.5 h-3.5" /> Admin Panel
-                    </Link>
+                    <a href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <LayoutDashboard className="w-3.5 h-3.5" /> {t("admin")}
+                    </a>
                   ) : (
-                    <Link
-                      href="/login"
-                      onClick={() => setMenuOpen(false)}
-                      className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <LogIn className="w-3.5 h-3.5" /> Admin Login
-                    </Link>
+                    <a href="/login" onClick={() => setMenuOpen(false)} className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <LogIn className="w-3.5 h-3.5" /> {t("login")}
+                    </a>
                   )}
                 </div>
               </nav>
