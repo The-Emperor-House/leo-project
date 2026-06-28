@@ -57,18 +57,8 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-border/60 shrink-0 shadow-sm">
-              <Image src="/logo.jpg" alt="LeoAngelo" fill className="object-cover" sizes="40px" />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-lg font-bold tracking-wide gold-text font-display">
-                LeoAngelo
-              </span>
-              <span className="text-[9px] tracking-[0.22em] text-muted-foreground uppercase font-normal mt-0.5">
-                Real Italy Furniture
-              </span>
-            </div>
+          <Link href="/" className="flex items-center group">
+            <Image src="/LeoAngelo-Logo_W347.png" alt="LeoAngelo" width={160} height={44} className="h-10 w-auto object-contain" />
           </Link>
 
           {/* Desktop nav */}

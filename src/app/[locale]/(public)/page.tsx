@@ -1,14 +1,26 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { motion, useInView, type Variants } from "framer-motion";
+import { motion, useInView, AnimatePresence, type Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Gem, Clock, Truck, Star, ChevronRight } from "lucide-react";
 import { Link } from "@/navigation";
 import Image from "next/image";
 
 const BASE = "http://www.leoangelo.co.th/wp-content/uploads";
+
+const SLIDES = [
+  "/slider/Slider001-L.png",
+  "/slider/Slider002-L.png",
+  "/slider/Slider003-L.png",
+  "/slider/Slider004-L.png",
+  "/slider/Slider006-L.png",
+  "/slider/Slider007-L.png",
+  "/slider/Slider008-L.png",
+  "/slider/Slider009-L.png",
+  "/slider/Slider010-L.png",
+];
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -71,6 +83,13 @@ function TestimonialCard({ text, author, role, delay }: { text: string; author: 
 
 export default function Home() {
   const t = useTranslations("home");
+  const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setSlide(s => (s + 1) % SLIDES.length), 4500);
+    return () => clearInterval(id);
+  }, []);
+
   const heroRef = useRef(null);
   const heroInView = useInView(heroRef, { once: true });
   const collectionsRef = useRef(null);
@@ -103,7 +122,25 @@ export default function Home() {
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={`${BASE}/2014/10/leoAngelo-05_Wiriya-015-w960.jpg`} alt="LeoAngelo Classic Furniture" fill className="object-cover" priority />
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={slide}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.2 }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={SLIDES[slide]}
+                alt="LeoAngelo Classic Furniture"
+                fill
+                className="object-cover object-center"
+                priority={slide === 0}
+                sizes="100vw"
+              />
+            </motion.div>
+          </AnimatePresence>
           <div className="absolute inset-0 bg-black/60" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50" />
         </div>
@@ -134,6 +171,17 @@ export default function Home() {
               </Button>
             </Link>
           </motion.div>
+        </div>
+
+        {/* Slide dots */}
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+          {SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setSlide(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === slide ? "w-5 bg-primary" : "w-1.5 bg-white/40"}`}
+            />
+          ))}
         </div>
 
         <motion.div custom={5} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
@@ -187,7 +235,7 @@ export default function Home() {
             </motion.div>
           </div>
           <motion.div initial={{ opacity: 0, x: 30 }} animate={aboutInView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.2, duration: 0.6 }} className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-            <Image src={`${BASE}/2014/10/leoAngelo-02_PreeDee020-w960.jpg`} alt="LeoAngelo Showroom" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
+            <Image src="/leoAngelo-02_PreeDee020-w960.jpg" alt="LeoAngelo Showroom" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
             <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-transparent" />
             <div className="absolute bottom-5 right-5 bg-card/90 backdrop-blur-sm rounded-2xl border border-border p-5 text-center">
               <p className="text-3xl font-semibold gold-text font-display">12+</p>

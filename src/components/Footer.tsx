@@ -28,9 +28,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand */}
           <div>
-            <Link href="/" className="flex items-center gap-2.5 mb-5">
-              <Image src="/logo.jpg" alt="LeoAngelo" width={32} height={32} className="rounded-lg object-cover" />
-              <span className="text-xl font-semibold tracking-wider gold-text font-display">LeoAngelo</span>
+            <Link href="/" className="flex items-center mb-5">
+              <Image src="/LeoAngelo-Logo_W347.png" alt="LeoAngelo" width={180} height={50} className="h-12 w-auto object-contain" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-xs">{t("desc")}</p>
             <ul className="space-y-2">

@@ -71,7 +71,7 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="relative py-28 px-6 overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={`${BASE}/2014/10/leoAngelo-05_Wiriya-004-w960.jpg`} alt="LeoAngelo Showroom" fill className="object-cover" priority />
+          <Image src="/leoAngelo-05_Wiriya-004-w960.jpg" alt="LeoAngelo Showroom" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-black/65" />
         </div>
         <div ref={heroRef} className="relative z-10 max-w-3xl mx-auto text-center text-white">
@@ -92,7 +92,7 @@ export default function AboutPage() {
       <section className="py-24 px-6">
         <div ref={storyRef} className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div initial={{ opacity: 0, x: -30 }} animate={storyInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.7 }} className="relative aspect-[3/4] rounded-2xl overflow-hidden">
-            <Image src={`${BASE}/2014/10/leoAngelo-02_PreeDee003-w960.jpg`} alt="LeoAngelo Classic Furniture" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
+            <Image src="/leoAngelo-02_PreeDee003-w960.jpg" alt="LeoAngelo Classic Furniture" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 text-white">
               <p className="text-xl italic font-light leading-snug font-display">
