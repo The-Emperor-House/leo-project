@@ -6,6 +6,7 @@ import { Plus, Pencil, Trash2, X, Upload, Loader2, ImageIcon } from "lucide-reac
 import Image from "next/image";
 import { upsertProject, deleteProject } from "./actions";
 import { uploadImage } from "../actions";
+import { Pagination } from "@/components/Pagination";
 
 type Project = {
   id: string; title: string; slug: string; location: string | null;
@@ -255,7 +256,12 @@ function ProjectDrawer({
   );
 }
 
-export function ProjectsClient({ projects }: { projects: Project[] }) {
+export function ProjectsClient({ projects, total, page, totalPages }: {
+  projects: Project[];
+  total: number;
+  page: number;
+  totalPages: number;
+}) {
   const router = useRouter();
   const [drawerProject, setDrawerProject] = useState<Project | "new" | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -275,7 +281,7 @@ export function ProjectsClient({ projects }: { projects: Project[] }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold mb-1 font-display">Projects</h1>
-          <p className="text-sm text-muted-foreground">ผลงานการตกแต่งบ้าน</p>
+          <p className="text-sm text-muted-foreground">ผลงานการตกแต่งบ้าน · {total} รายการ</p>
         </div>
         <button
           onClick={() => setDrawerProject("new")}
@@ -347,6 +353,8 @@ export function ProjectsClient({ projects }: { projects: Project[] }) {
           </table>
         )}
       </div>
+
+      <Pagination page={page} totalPages={totalPages} basePath="/admin/projects" />
 
       {drawerProject !== null && (
         <ProjectDrawer

@@ -4,7 +4,9 @@ import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2, X, Upload, Loader2, ImageIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { upsertProduct, deleteProduct, uploadImage } from "../actions";
+import { Pagination } from "@/components/Pagination";
 
 type Product = {
   id: string; title: string; line: string; category: string; description: string;
@@ -26,6 +28,14 @@ const CATEGORIES = [
 
 const LINE_LABEL: Record<string, string> = { classic: "Classic", luxury: "Luxury" };
 const CAT_LABEL: Record<string, string> = { furniture: "Furniture", lighting: "Lighting", ornament: "Ornament", hardwares: "Hardwares" };
+
+function buildFilterUrl(line?: string, category?: string) {
+  const p = new URLSearchParams();
+  if (line) p.set("line", line);
+  if (category) p.set("category", category);
+  const q = p.toString();
+  return `/admin/products${q ? `?${q}` : ""}`;
+}
 
 function ImageSlot({ url, uploading, onUpload, onRemove }: {
   url: string; uploading: boolean;
@@ -100,7 +110,6 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           {product && <input type="hidden" name="id" value={product.id} />}
 
-          {/* Main image */}
           <div className="space-y-2">
             <label className="text-sm font-medium">ภาพหลัก</label>
             <div className="max-w-xs">
@@ -110,14 +119,12 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
             </div>
           </div>
 
-          {/* Title */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium">ชื่อสินค้า</label>
             <input name="title" value={title} onChange={(e) => setTitle(e.target.value)} required
               className="w-full rounded-lg border border-border bg-secondary/40 px-3 py-2 text-sm outline-none focus:border-primary/60" />
           </div>
 
-          {/* Line + Category */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-sm font-medium">Line</label>
@@ -135,14 +142,12 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
             </div>
           </div>
 
-          {/* Description */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium">รายละเอียด</label>
             <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)}
               rows={3} className="w-full rounded-lg border border-border bg-secondary/40 px-3 py-2 text-sm outline-none focus:border-primary/60 resize-none" />
           </div>
 
-          {/* Gallery */}
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
               <ImageIcon className="w-4 h-4" /> รูปเพิ่มเติม ({gallery.filter(Boolean).length} รูป)
@@ -156,7 +161,6 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
             </div>
           </div>
 
-          {/* Options */}
           <div className="flex items-center gap-6 flex-wrap">
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <input type="checkbox" name="published" checked={published} onChange={(e) => setPublished(e.target.checked)} /> Published
@@ -197,18 +201,24 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
   );
 }
 
-export function ProductsClient({ products }: { products: Product[] }) {
+export function ProductsClient({
+  products, total, page, totalPages, currentLine, currentCategory, lineCounts, catCounts,
+}: {
+  products: Product[];
+  total: number;
+  page: number;
+  totalPages: number;
+  currentLine?: string;
+  currentCategory?: string;
+  lineCounts: Record<string, number>;
+  catCounts: Record<string, number>;
+}) {
   const router = useRouter();
   const [drawer, setDrawer] = useState<Product | "new" | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [activeLine, setActiveLine] = useState("all");
-  const [activeCat, setActiveCat] = useState("all");
 
-  const filtered = products.filter((p) => {
-    if (activeLine !== "all" && p.line !== activeLine) return false;
-    if (activeCat !== "all" && p.category !== activeCat) return false;
-    return true;
-  });
+  const totalAll = Object.values(lineCounts).reduce((s, n) => s + n, 0);
+  const catTotal = Object.values(catCounts).reduce((s, n) => s + n, 0);
 
   function handleDelete(id: string) {
     if (!confirm("ลบสินค้านี้?")) return;
@@ -218,18 +228,14 @@ export function ProductsClient({ products }: { products: Product[] }) {
     });
   }
 
-  const lineCount = (v: string) => v === "all" ? products.length : products.filter((p) => p.line === v).length;
-  const catCount = (v: string) => {
-    const base = activeLine === "all" ? products : products.filter((p) => p.line === activeLine);
-    return v === "all" ? base.length : base.filter((p) => p.category === v).length;
-  };
-
   return (
     <>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold mb-1 font-display">Products</h1>
-          <p className="text-sm text-muted-foreground">จัดการสินค้าและคอลเลกชัน</p>
+          <p className="text-sm text-muted-foreground">
+            {total} รายการ{currentLine || currentCategory ? " (filtered)" : ""}
+          </p>
         </div>
         <button onClick={() => setDrawer("new")}
           className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm px-4 py-2 rounded-lg transition-colors">
@@ -239,30 +245,36 @@ export function ProductsClient({ products }: { products: Product[] }) {
 
       {/* Line tabs */}
       <div className="flex gap-1 mb-2 overflow-x-auto pb-1">
-        {[{ value: "all", label: "ทั้งหมด" }, ...LINES].map((tab) => (
-          <button key={tab.value} onClick={() => { setActiveLine(tab.value); setActiveCat("all"); }}
-            className={`shrink-0 px-3.5 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1.5 ${activeLine === tab.value ? "bg-primary text-primary-foreground" : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
-            {tab.label}
-            <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeLine === tab.value ? "bg-white/20" : "bg-border"}`}>{lineCount(tab.value)}</span>
-          </button>
-        ))}
+        {[{ value: undefined, label: "ทั้งหมด", count: totalAll }, ...LINES.map((l) => ({ ...l, value: l.value as string | undefined, count: lineCounts[l.value] ?? 0 }))].map((tab) => {
+          const active = (tab.value ?? undefined) === currentLine;
+          return (
+            <Link key={tab.value ?? "all"} href={buildFilterUrl(tab.value, undefined)}
+              className={`shrink-0 px-3.5 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1.5 ${active ? "bg-primary text-primary-foreground" : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
+              {tab.label}
+              <span className={`text-xs px-1.5 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-border"}`}>{tab.count}</span>
+            </Link>
+          );
+        })}
       </div>
 
       {/* Category tabs */}
       <div className="flex gap-1 mb-4 overflow-x-auto pb-1">
-        {[{ value: "all", label: "ทุกหมวด" }, ...CATEGORIES].map((tab) => (
-          <button key={tab.value} onClick={() => setActiveCat(tab.value)}
-            className={`shrink-0 px-3 py-1 rounded-md text-xs transition-colors flex items-center gap-1 ${activeCat === tab.value ? "bg-foreground text-background" : "bg-secondary/40 text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
-            {tab.label}
-            <span className={`text-[10px] px-1 py-0.5 rounded-full ${activeCat === tab.value ? "bg-white/20" : "bg-border"}`}>{catCount(tab.value)}</span>
-          </button>
-        ))}
+        {[{ value: undefined, label: "ทุกหมวด", count: catTotal }, ...CATEGORIES.map((c) => ({ ...c, value: c.value as string | undefined, count: catCounts[c.value] ?? 0 }))].map((tab) => {
+          const active = (tab.value ?? undefined) === currentCategory;
+          return (
+            <Link key={tab.value ?? "all"} href={buildFilterUrl(currentLine, tab.value)}
+              className={`shrink-0 px-3 py-1 rounded-md text-xs transition-colors flex items-center gap-1 ${active ? "bg-foreground text-background" : "bg-secondary/40 text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
+              {tab.label}
+              <span className={`text-[10px] px-1 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-border"}`}>{tab.count}</span>
+            </Link>
+          );
+        })}
       </div>
 
       <div className="rounded-xl border border-border overflow-hidden">
-        {filtered.length === 0 ? (
+        {products.length === 0 ? (
           <div className="p-12 text-center text-sm text-muted-foreground">
-            {products.length === 0 ? "ยังไม่มีสินค้า" : "ไม่มีสินค้าในหมวดนี้"}
+            {total === 0 ? "ยังไม่มีสินค้า" : "ไม่มีสินค้าในหมวดนี้"}
           </div>
         ) : (
           <table className="w-full text-sm">
@@ -277,7 +289,7 @@ export function ProductsClient({ products }: { products: Product[] }) {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((p) => (
+              {products.map((p) => (
                 <tr key={p.id} className="border-b border-border last:border-0 hover:bg-secondary/30">
                   <td className="px-4 py-3">
                     <div className="relative w-10 h-10 rounded-md overflow-hidden bg-secondary">
@@ -316,6 +328,13 @@ export function ProductsClient({ products }: { products: Product[] }) {
           </table>
         )}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        basePath="/admin/products"
+        params={{ line: currentLine, category: currentCategory }}
+      />
 
       {drawer !== null && (
         <ProductDrawer product={drawer === "new" ? null : drawer} onClose={() => setDrawer(null)} />

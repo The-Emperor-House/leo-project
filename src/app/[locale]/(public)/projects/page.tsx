@@ -2,12 +2,29 @@ import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import { Link } from "@/navigation";
 import { MapPin, Images } from "lucide-react";
+import { Pagination } from "@/components/Pagination";
 
-export default async function ProjectsPage() {
-  const projects = await prisma.project.findMany({
-    where: { published: true },
-    orderBy: [{ featured: "desc" }, { order: "asc" }, { createdAt: "desc" }],
-  });
+const PAGE_SIZE = 12;
+
+export default async function ProjectsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
+  const sp = await searchParams;
+  const page = Math.max(1, parseInt(sp.page ?? "1"));
+
+  const [projects, total] = await Promise.all([
+    prisma.project.findMany({
+      where: { published: true },
+      orderBy: [{ featured: "desc" }, { order: "asc" }, { createdAt: "desc" }],
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.project.count({ where: { published: true } }),
+  ]);
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
     <main>
@@ -78,6 +95,7 @@ export default async function ProjectsPage() {
               })}
             </div>
           )}
+          <Pagination page={page} totalPages={totalPages} basePath={`/projects`} />
         </div>
       </section>
     </main>
