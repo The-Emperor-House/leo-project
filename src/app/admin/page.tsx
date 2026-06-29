@@ -9,8 +9,7 @@ const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
-  living: "Living Room", dining: "Dining Room", bedroom: "Bedroom",
-  working: "Working Room", lighting: "Lighting", ornament: "Ornament",
+  furniture: "Furniture", lighting: "Lighting", ornament: "Ornament", hardwares: "Hardwares",
 };
 
 export default async function AdminDashboard() {

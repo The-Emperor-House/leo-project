@@ -35,6 +35,7 @@ export async function upsertProduct(formData: FormData) {
   const images = formData.getAll("images") as string[];
   const data = {
     title: formData.get("title") as string,
+    line: formData.get("line") as string,
     category: formData.get("category") as string,
     description: formData.get("description") as string,
     imageUrl: (formData.get("imageUrl") as string) || null,

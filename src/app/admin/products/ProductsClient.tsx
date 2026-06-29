@@ -7,19 +7,25 @@ import Image from "next/image";
 import { upsertProduct, deleteProduct, uploadImage } from "../actions";
 
 type Product = {
-  id: string; title: string; category: string; description: string;
+  id: string; title: string; line: string; category: string; description: string;
   imageUrl: string | null; images: string | null;
   featured: boolean; published: boolean; order: number;
 };
 
-const CATEGORIES = [
-  { value: "living",   label: "Living Room" },
-  { value: "dining",   label: "Dining Room" },
-  { value: "bedroom",  label: "Bedroom" },
-  { value: "working",  label: "Working Room" },
-  { value: "lighting", label: "Lighting" },
-  { value: "ornament", label: "Ornament" },
+const LINES = [
+  { value: "classic", label: "Classic" },
+  { value: "luxury",  label: "Luxury" },
 ];
+
+const CATEGORIES = [
+  { value: "furniture",  label: "Furniture" },
+  { value: "lighting",   label: "Lighting" },
+  { value: "ornament",   label: "Ornament" },
+  { value: "hardwares",  label: "Hardwares" },
+];
+
+const LINE_LABEL: Record<string, string> = { classic: "Classic", luxury: "Luxury" };
+const CAT_LABEL: Record<string, string> = { furniture: "Furniture", lighting: "Lighting", ornament: "Ornament", hardwares: "Hardwares" };
 
 function ImageSlot({ url, uploading, onUpload, onRemove }: {
   url: string; uploading: boolean;
@@ -52,7 +58,8 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [title, setTitle] = useState(product?.title ?? "");
-  const [category, setCategory] = useState(product?.category ?? "living");
+  const [line, setLine] = useState(product?.line ?? "classic");
+  const [category, setCategory] = useState(product?.category ?? "furniture");
   const [description, setDescription] = useState(product?.description ?? "");
   const [featured, setFeatured] = useState(product?.featured ?? false);
   const [published, setPublished] = useState(product?.published ?? true);
@@ -103,14 +110,23 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
             </div>
           </div>
 
-          {/* Title + Category */}
+          {/* Title */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">ชื่อสินค้า</label>
+            <input name="title" value={title} onChange={(e) => setTitle(e.target.value)} required
+              className="w-full rounded-lg border border-border bg-secondary/40 px-3 py-2 text-sm outline-none focus:border-primary/60" />
+          </div>
+
+          {/* Line + Category */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5 col-span-2 sm:col-span-1">
-              <label className="text-sm font-medium">ชื่อสินค้า</label>
-              <input name="title" value={title} onChange={(e) => setTitle(e.target.value)} required
-                className="w-full rounded-lg border border-border bg-secondary/40 px-3 py-2 text-sm outline-none focus:border-primary/60" />
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">Line</label>
+              <select name="line" value={line} onChange={(e) => setLine(e.target.value)}
+                className="w-full rounded-lg border border-border bg-secondary/40 px-3 py-2 text-sm outline-none focus:border-primary/60">
+                {LINES.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
+              </select>
             </div>
-            <div className="space-y-1.5 col-span-2 sm:col-span-1">
+            <div className="space-y-1.5">
               <label className="text-sm font-medium">หมวดหมู่</label>
               <select name="category" value={category} onChange={(e) => setCategory(e.target.value)}
                 className="w-full rounded-lg border border-border bg-secondary/40 px-3 py-2 text-sm outline-none focus:border-primary/60">
@@ -161,7 +177,7 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
               <span className="relative group/tip">
                 <span className="w-4 h-4 rounded-full bg-secondary border border-border text-muted-foreground text-[10px] font-bold flex items-center justify-center cursor-help select-none">?</span>
                 <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 rounded-lg bg-foreground text-background text-xs px-3 py-2 leading-relaxed opacity-0 group-hover/tip:opacity-100 transition-opacity z-20 shadow-lg">
-                  ตัวเลขน้อย = แสดงก่อน<br />เช่น Order 1 ขึ้นก่อน Order 5<br />ถ้าเท่ากันจะเรียงตามวันที่สร้าง
+                  ตัวเลขน้อย = แสดงก่อน<br />เช่น Order 1 ขึ้นก่อน Order 5
                   <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
                 </span>
               </span>
@@ -181,28 +197,18 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
   );
 }
 
-const TABS = [
-  { value: "all",     label: "ทั้งหมด" },
-  { value: "living",  label: "Living Room" },
-  { value: "dining",  label: "Dining Room" },
-  { value: "bedroom", label: "Bedroom" },
-  { value: "working", label: "Working Room" },
-  { value: "lighting",label: "Lighting" },
-  { value: "ornament",label: "Ornament" },
-];
-
-const categoryLabel: Record<string, string> = {
-  living: "Living Room", dining: "Dining Room", bedroom: "Bedroom",
-  working: "Working Room", lighting: "Lighting", ornament: "Ornament",
-};
-
 export function ProductsClient({ products }: { products: Product[] }) {
   const router = useRouter();
   const [drawer, setDrawer] = useState<Product | "new" | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeLine, setActiveLine] = useState("all");
+  const [activeCat, setActiveCat] = useState("all");
 
-  const filtered = activeTab === "all" ? products : products.filter((p) => p.category === activeTab);
+  const filtered = products.filter((p) => {
+    if (activeLine !== "all" && p.line !== activeLine) return false;
+    if (activeCat !== "all" && p.category !== activeCat) return false;
+    return true;
+  });
 
   function handleDelete(id: string) {
     if (!confirm("ลบสินค้านี้?")) return;
@@ -211,6 +217,12 @@ export function ProductsClient({ products }: { products: Product[] }) {
       await deleteProduct(fd); router.refresh();
     });
   }
+
+  const lineCount = (v: string) => v === "all" ? products.length : products.filter((p) => p.line === v).length;
+  const catCount = (v: string) => {
+    const base = activeLine === "all" ? products : products.filter((p) => p.line === activeLine);
+    return v === "all" ? base.length : base.filter((p) => p.category === v).length;
+  };
 
   return (
     <>
@@ -225,27 +237,26 @@ export function ProductsClient({ products }: { products: Product[] }) {
         </button>
       </div>
 
-      {/* Filter tabs */}
+      {/* Line tabs */}
+      <div className="flex gap-1 mb-2 overflow-x-auto pb-1">
+        {[{ value: "all", label: "ทั้งหมด" }, ...LINES].map((tab) => (
+          <button key={tab.value} onClick={() => { setActiveLine(tab.value); setActiveCat("all"); }}
+            className={`shrink-0 px-3.5 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1.5 ${activeLine === tab.value ? "bg-primary text-primary-foreground" : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
+            {tab.label}
+            <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeLine === tab.value ? "bg-white/20" : "bg-border"}`}>{lineCount(tab.value)}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Category tabs */}
       <div className="flex gap-1 mb-4 overflow-x-auto pb-1">
-        {TABS.map((tab) => {
-          const count = tab.value === "all" ? products.length : products.filter((p) => p.category === tab.value).length;
-          return (
-            <button
-              key={tab.value}
-              onClick={() => setActiveTab(tab.value)}
-              className={`shrink-0 px-3.5 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1.5 ${
-                activeTab === tab.value
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
-              }`}
-            >
-              {tab.label}
-              <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab.value ? "bg-white/20" : "bg-border"}`}>
-                {count}
-              </span>
-            </button>
-          );
-        })}
+        {[{ value: "all", label: "ทุกหมวด" }, ...CATEGORIES].map((tab) => (
+          <button key={tab.value} onClick={() => setActiveCat(tab.value)}
+            className={`shrink-0 px-3 py-1 rounded-md text-xs transition-colors flex items-center gap-1 ${activeCat === tab.value ? "bg-foreground text-background" : "bg-secondary/40 text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
+            {tab.label}
+            <span className={`text-[10px] px-1 py-0.5 rounded-full ${activeCat === tab.value ? "bg-white/20" : "bg-border"}`}>{catCount(tab.value)}</span>
+          </button>
+        ))}
       </div>
 
       <div className="rounded-xl border border-border overflow-hidden">
@@ -259,6 +270,7 @@ export function ProductsClient({ products }: { products: Product[] }) {
               <tr>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground w-14">ภาพ</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">ชื่อสินค้า</th>
+                <th className="text-left px-4 py-3 font-medium text-muted-foreground">Line</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">หมวดหมู่</th>
                 <th className="text-left px-4 py-3 font-medium text-muted-foreground">สถานะ</th>
                 <th className="px-4 py-3 w-20" />
@@ -275,7 +287,12 @@ export function ProductsClient({ products }: { products: Product[] }) {
                     </div>
                   </td>
                   <td className="px-4 py-3 font-medium">{p.title}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{categoryLabel[p.category] ?? p.category}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${p.line === "luxury" ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}>
+                      {LINE_LABEL[p.line] ?? p.line}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{CAT_LABEL[p.category] ?? p.category}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${p.published ? "bg-green-500/15 text-green-600" : "bg-secondary text-muted-foreground"}`}>
                       {p.published ? "Published" : "Draft"}
@@ -284,8 +301,7 @@ export function ProductsClient({ products }: { products: Product[] }) {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1 justify-end">
-                      <button onClick={() => setDrawer(p)}
-                        className="p-1.5 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
+                      <button onClick={() => setDrawer(p)} className="p-1.5 rounded-lg hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button onClick={() => handleDelete(p.id)} disabled={isPending}
