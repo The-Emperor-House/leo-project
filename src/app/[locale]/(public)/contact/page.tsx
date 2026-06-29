@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from "lucide-react";
+import { Link } from "@/navigation";
 
 export default function ContactPage() {
   const t = useTranslations("contact");
@@ -15,6 +16,8 @@ export default function ContactPage() {
 
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", interest: "", message: "" });
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -22,6 +25,8 @@ export default function ContactPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!consent) { setConsentError(true); return; }
+    setConsentError(false);
     try {
       const res = await fetch("/api/inquiries", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
       if (res.ok) setSubmitted(true);
@@ -136,6 +141,27 @@ export default function ContactPage() {
                       <label className="block text-xs text-muted-foreground uppercase tracking-wider mb-2">{t("message_label")} *</label>
                       <textarea name="message" value={form.message} onChange={handleChange} required rows={5} placeholder={t("message_ph")} className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-colors resize-none" />
                     </div>
+                    {/* PDPA Consent */}
+                    <div className={`rounded-xl border p-4 transition-colors ${consentError ? "border-red-400 bg-red-500/5" : "border-border bg-secondary/30"}`}>
+                      <label className="flex gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={consent}
+                          onChange={(e) => { setConsent(e.target.checked); if (e.target.checked) setConsentError(false); }}
+                          className="mt-0.5 w-4 h-4 shrink-0 accent-primary cursor-pointer"
+                        />
+                        <span className="text-xs text-muted-foreground leading-relaxed">
+                          {t("consent_text")}{" "}
+                          <Link href="/privacy" className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors">
+                            {t("consent_link")}
+                          </Link>
+                        </span>
+                      </label>
+                      {consentError && (
+                        <p className="text-xs text-red-500 mt-2 ml-7">{t("consent_required")}</p>
+                      )}
+                    </div>
+
                     <Button type="submit" size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground w-full h-12 tracking-wider gold-glow">
                       {t("submit")} <Send className="ml-2 w-4 h-4" />
                     </Button>

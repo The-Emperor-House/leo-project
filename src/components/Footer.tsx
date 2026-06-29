@@ -20,6 +20,7 @@ export default function Footer() {
     { label: "About Us", href: "/about" },
     { label: t("craftsmanship"), href: "/about#craftsmanship" },
     { label: "Contact", href: "/contact" },
+    { label: t("privacy"), href: "/privacy" },
   ];
 
   return (
