@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { X, Mail, Phone, Tag, Calendar, MessageSquare, Loader2 } from "lucide-react";
 import { updateInquiryStatus } from "../actions";
+import { Pagination } from "@/components/Pagination";
 
 type InquiryRow = {
   id: string; name: string; email: string; phone: string | null;
@@ -20,7 +21,13 @@ const statusLabel: Record<string, string> = {
   NEW: "ใหม่", CONTACTED: "ติดต่อแล้ว", CLOSED: "ปิด",
 };
 
-export function InquiriesClient({ inquiries }: { inquiries: InquiryRow[] }) {
+export function InquiriesClient({ inquiries, total, page, totalPages, currentStatus }: {
+  inquiries: InquiryRow[];
+  total: number;
+  page: number;
+  totalPages: number;
+  currentStatus?: string;
+}) {
   const router = useRouter();
   const [selected, setSelected] = useState<InquiryRow | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -93,6 +100,13 @@ export function InquiriesClient({ inquiries }: { inquiries: InquiryRow[] }) {
           </table>
         )}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        basePath="/admin/inquiries"
+        params={{ status: currentStatus }}
+      />
 
       {/* Drawer */}
       {selected && (
