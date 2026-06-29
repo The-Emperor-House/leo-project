@@ -162,7 +162,14 @@
     "message_ph": "Tell us about your space, style preferences, or the furniture you're interested in...",
     "submit": "Send Message",
     "success_heading": "Thank You",
-    "success_desc": "We've received your message and will get back to you within 1 business day. Thank you for your interest in LeoAngelo."
+    "success_desc": "We've received your message and will get back to you within 1 business day. Thank you for your interest in LeoAngelo.",
+    "consent_text": "I consent to Leo Angelo Co., Ltd. collecting my personal data (name, email, phone, and message) to respond to this inquiry, in accordance with the",
+    "consent_link": "Privacy Policy",
+    "consent_required": "Please accept the Privacy Policy to continue"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "updated": "Last updated: 29 June 2026"
   },
   "footer": {
     "desc": "Importers of authentic classic Italian furniture. Handmade by master Italian craftsmen. Trusted for over 12 years.",
@@ -171,6 +178,7 @@
     "craftsmanship": "Our Craftsmanship",
     "quote": "Quality is remembered long after price is forgotten.",
     "copyright": "© 2026 Leo Angelo Co., Ltd. All rights reserved.",
-    "crafted": "Crafted with care in Thailand"
+    "crafted": "Crafted with care in Thailand",
+    "privacy": "Privacy Policy"
   }
 }
