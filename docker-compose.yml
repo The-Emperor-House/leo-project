@@ -5,7 +5,8 @@ services:
     ports:
       - "3003:3000"
     environment:
-      DATABASE_URL: mysql://leoangelo:leopass@db:3306/leoangelo
+      DATABASE_URL: postgresql://leoangelo:leopass@db:5432/leoangelo
+      DIRECT_URL: postgresql://leoangelo:leopass@db:5432/leoangelo
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3003}
       AUTH_SECRET: ${NEXTAUTH_SECRET}
@@ -17,37 +18,34 @@ services:
     restart: unless-stopped
 
   db:
-    image: mysql:8.0
+    image: postgres:16
     container_name: leo-db
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: leoangelo
-      MYSQL_USER: leoangelo
-      MYSQL_PASSWORD: leopass
+      POSTGRES_DB: leoangelo
+      POSTGRES_USER: leoangelo
+      POSTGRES_PASSWORD: leopass
     ports:
-      - "3309:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass"]
+      test: ["CMD-SHELL", "pg_isready -U leoangelo -d leoangelo"]
       interval: 10s
       timeout: 5s
       retries: 5
     restart: unless-stopped
 
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: leo-pma
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: leo-pgadmin
     ports:
       - "8083:80"
     environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: rootpass
+      PGADMIN_DEFAULT_EMAIL: admin@leoangelo.co.th
+      PGADMIN_DEFAULT_PASSWORD: leopass
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     restart: unless-stopped
 
 volumes:
-  mysql_data:
+  postgres_data:
