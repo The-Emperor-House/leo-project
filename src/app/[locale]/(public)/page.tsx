@@ -154,10 +154,10 @@ export default function Home() {
           <motion.div custom={0} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="ornament text-xs tracking-[0.3em] uppercase text-primary font-medium mb-8 max-w-xs mx-auto">
             {t("hero_label")}
           </motion.div>
-          <motion.h1 custom={1} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-6xl md:text-8xl font-light tracking-wide mb-4 leading-none">
+          <motion.h1 custom={1} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-6xl md:text-8xl font-light tracking-wide mb-4 leading-tight">
             {t("hero_h1")}
           </motion.h1>
-          <motion.h1 custom={2} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-5xl md:text-7xl font-semibold italic tracking-wide mb-8 leading-none gold-text">
+          <motion.h1 custom={2} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-5xl md:text-7xl font-semibold italic tracking-wide mb-8 leading-tight gold-text">
             {t("hero_h2")}
           </motion.h1>
           <motion.p custom={3} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-lg text-white/65 max-w-xl mx-auto mb-12 leading-relaxed">

@@ -116,19 +116,32 @@
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+    text-wrap: balance;
   }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* Thai characters have tall diacritics — tight line-height clips them */
+[data-locale="th"] h1,
+[data-locale="th"] h2,
+[data-locale="th"] h3 {
+  line-height: 1.45;
 }
 
 /* Utility classes — use these in JSX, never inline style for fonts */
 .font-display { font-family: var(--font-display); }
 .font-ui      { font-family: var(--font-ui); }
 
-/* Gold gradient text */
+/* Gold gradient text — padding compensates for italic edge clip from background-clip:text */
 .gold-text {
   background: linear-gradient(135deg, oklch(0.62 0.13 76), oklch(0.54 0.10 62));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding: 0.05em 0.15em;
+  margin: -0.05em -0.15em;
 }
 
 /* Subtle warm glow for CTA buttons */

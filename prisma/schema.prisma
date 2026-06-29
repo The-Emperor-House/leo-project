@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -23,19 +24,35 @@ model Inquiry {
   email     String
   phone     String?
   interest  String?
-  message   String   @db.Text
+  message   String
   status    String   @default("NEW")
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  location    String?
+  description String?
+  coverImage  String?
+  images      String?
+  style       String?
+  featured    Boolean  @default(false)
+  published   Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Product {
   id          String   @id @default(cuid())
   title       String
   category    String
-  description String   @db.Text
+  description String
   imageUrl    String?
-  images      String?  @db.Text
+  images      String?
   featured    Boolean  @default(false)
   published   Boolean  @default(true)
   order       Int      @default(0)
