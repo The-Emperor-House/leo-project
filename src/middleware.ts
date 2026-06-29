@@ -1,8 +1,10 @@
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 import createIntlMiddleware from "next-intl/middleware";
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { routing } from "@/i18n/routing";
 
+const { auth } = NextAuth(authConfig);
 const intlMiddleware = createIntlMiddleware(routing);
 
 const localeLoginRe = new RegExp(`^/(${routing.locales.join("|")})/login$`);
@@ -23,7 +25,6 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  // /login is not locale-scoped — intlMiddleware would redirect /login → /th/login (404)
   if (pathname === "/login") return NextResponse.next();
   if (localeLoginRe.test(pathname)) {
     return NextResponse.redirect(new URL("/login", req.url));
