@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, X, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { Link } from "@/navigation";
 import Image from "next/image";
 
@@ -16,8 +16,11 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 type ProductItem = {
-  id: string; title: string; imageUrl: string | null; images: string | null; description: string; category: string;
+  id: string; title: string; imageUrl: string | null; images: string | null;
+  description: string; category: string; featured: boolean;
 };
+
+type CategoryProducts = { preview: ProductItem[]; rest: ProductItem[]; };
 
 /* ── Product detail modal ── */
 function ProductModal({ product, onClose }: { product: ProductItem; onClose: () => void }) {
@@ -180,6 +183,13 @@ function ProductCard({ product, onSelect }: { product: ProductItem; onSelect: (p
             </svg>
           </div>
         )}
+        {product.featured && (
+          <div className="absolute top-2 left-2">
+            <span className="bg-primary text-primary-foreground text-[10px] font-semibold px-2 py-0.5 rounded-full tracking-wide">
+              แนะนำ
+            </span>
+          </div>
+        )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200 flex items-center justify-center">
           <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white text-xs px-3 py-1.5 rounded-full">
             ดูรายละเอียด
@@ -196,17 +206,51 @@ function ProductCard({ product, onSelect }: { product: ProductItem; onSelect: (p
   );
 }
 
+/* ── Featured section ── */
+function FeaturedSection({ products, onSelect }: { products: ProductItem[]; onSelect: (p: ProductItem) => void }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const t = useTranslations("collections");
+  if (products.length === 0) return null;
+  return (
+    <section className="py-20 px-6 border-b border-border bg-secondary/20">
+      <div ref={ref} className="max-w-6xl mx-auto">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.55 }} className="flex items-end justify-between mb-8">
+          <div>
+            <p className="text-primary text-xs font-semibold uppercase tracking-[0.25em] mb-2">Editor's Pick</p>
+            <h2 className="text-3xl md:text-4xl font-light text-foreground">
+              สินค้า<span className="gold-text font-semibold italic">แนะนำ</span>
+            </h2>
+          </div>
+          <p className="text-sm text-muted-foreground hidden sm:block">{products.length} รายการ คัดสรรโดยทีมงาน</p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.55 }}
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+        >
+          {products.map((p) => <ProductCard key={p.id} product={p} onSelect={onSelect} />)}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 /* ── Category section ── */
 function CategorySection({ id, label, labelSub, headline, desc, items, image, reversed, products, onSelect }: {
   id: string; label: string; labelSub: string; headline: string; desc: string;
-  items: string[]; image: string; reversed: boolean; products: ProductItem[];
+  items: string[]; image: string; reversed: boolean; products: CategoryProducts;
   onSelect: (p: ProductItem) => void;
 }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const prodRef = useRef(null);
   const prodInView = useInView(prodRef, { once: true, margin: "-40px" });
+  const [showAll, setShowAll] = useState(false);
   const t = useTranslations("collections");
+
+  const { preview, rest } = products;
+  const total = preview.length + rest.length;
+  const displayed = showAll ? [...preview, ...rest] : preview;
 
   return (
     <section id={id} className="py-24 px-6 border-b border-border last:border-0">
@@ -243,14 +287,28 @@ function CategorySection({ id, label, labelSub, headline, desc, items, image, re
         </motion.div>
       </div>
 
-      {products.length > 0 && (
+      {total > 0 && (
         <motion.div ref={prodRef} initial={{ opacity: 0, y: 20 }} animate={prodInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }} className="max-w-6xl mx-auto mt-14">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-6">
-            {label} — สินค้าในคอลเลกชัน
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {products.map((p) => <ProductCard key={p.id} product={p} onSelect={onSelect} />)}
+          <div className="flex items-center justify-between mb-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              {label} — สินค้าในคอลเลกชัน
+              <span className="ml-2 text-muted-foreground font-normal normal-case tracking-normal">({total} รายการ)</span>
+            </p>
           </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {displayed.map((p) => <ProductCard key={p.id} product={p} onSelect={onSelect} />)}
+          </div>
+          {!showAll && rest.length > 0 && (
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setShowAll(true)}
+                className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 border border-primary/30 hover:border-primary/60 hover:bg-primary/5 px-5 py-2.5 rounded-full transition-all"
+              >
+                <ChevronDown className="w-4 h-4" />
+                ดูสินค้าทั้งหมด {rest.length} รายการที่เหลือ
+              </button>
+            </div>
+          )}
         </motion.div>
       )}
     </section>
@@ -277,25 +335,48 @@ function ExtraCard({ title, titleSub, desc, bg, delay }: { title: string; titleS
 }
 
 /* ── Mini product grid for Lighting / Ornament ── */
-function MiniProductGrid({ label, products, onSelect }: { label: string; products: ProductItem[]; onSelect: (p: ProductItem) => void }) {
-  if (products.length === 0) return null;
+function MiniProductGrid({ label, products, onSelect }: { label: string; products: CategoryProducts; onSelect: (p: ProductItem) => void }) {
+  const [showAll, setShowAll] = useState(false);
+  const { preview, rest } = products;
+  const total = preview.length + rest.length;
+  if (total === 0) return null;
+  const displayed = showAll ? [...preview, ...rest] : preview;
   return (
     <div className="mt-12">
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-5">{label} — สินค้าในคอลเลกชัน</p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {products.map((p) => <ProductCard key={p.id} product={p} onSelect={onSelect} />)}
+      <div className="flex items-center justify-between mb-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+          {label} — สินค้าในคอลเลกชัน
+          <span className="ml-2 text-muted-foreground font-normal normal-case tracking-normal">({total} รายการ)</span>
+        </p>
       </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        {displayed.map((p) => <ProductCard key={p.id} product={p} onSelect={onSelect} />)}
+      </div>
+      {!showAll && rest.length > 0 && (
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => setShowAll(true)}
+            className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 border border-primary/30 hover:border-primary/60 hover:bg-primary/5 px-5 py-2.5 rounded-full transition-all"
+          >
+            <ChevronDown className="w-4 h-4" />
+            ดูสินค้าทั้งหมด {rest.length} รายการที่เหลือ
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
 /* ── Main export ── */
 type ProductsByCategory = {
-  living: ProductItem[]; dining: ProductItem[]; bedroom: ProductItem[];
-  working: ProductItem[]; lighting: ProductItem[]; ornament: ProductItem[];
+  living: CategoryProducts; dining: CategoryProducts; bedroom: CategoryProducts;
+  working: CategoryProducts; lighting: CategoryProducts; ornament: CategoryProducts;
 };
 
-export function CollectionsClient({ productsByCategory }: { productsByCategory: ProductsByCategory }) {
+export function CollectionsClient({ productsByCategory, featuredProducts }: {
+  productsByCategory: ProductsByCategory;
+  featuredProducts: ProductItem[];
+}) {
   const t = useTranslations("collections");
   const heroRef = useRef(null);
   const heroInView = useInView(heroRef, { once: true });
@@ -326,6 +407,8 @@ export function CollectionsClient({ productsByCategory }: { productsByCategory: 
           </motion.p>
         </div>
       </section>
+
+      <FeaturedSection products={featuredProducts} onSelect={setSelected} />
 
       {categories.map((cat) => <CategorySection key={cat.id} {...cat} onSelect={setSelected} />)}
 

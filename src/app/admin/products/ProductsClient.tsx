@@ -141,15 +141,30 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
           </div>
 
           {/* Options */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 flex-wrap">
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <input type="checkbox" name="published" checked={published} onChange={(e) => setPublished(e.target.checked)} /> Published
             </label>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="checkbox" name="featured" checked={featured} onChange={(e) => setFeatured(e.target.checked)} /> Featured
+              <input type="checkbox" name="featured" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
+              <span>Featured</span>
+              <span className="relative group/tip">
+                <span className="w-4 h-4 rounded-full bg-secondary border border-border text-muted-foreground text-[10px] font-bold flex items-center justify-center cursor-help select-none">?</span>
+                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-lg bg-foreground text-background text-xs px-3 py-2 leading-relaxed opacity-0 group-hover/tip:opacity-100 transition-opacity z-20 shadow-lg">
+                  ✦ สินค้าที่ติ๊ก Featured จะแสดง badge "แนะนำ" บน card และปรากฏในส่วน <strong>สินค้าแนะนำ</strong> ด้านบนหน้า Collections
+                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
+                </span>
+              </span>
             </label>
             <div className="flex items-center gap-2">
-              <label className="text-sm">Order</label>
+              <span className="text-sm">Order</span>
+              <span className="relative group/tip">
+                <span className="w-4 h-4 rounded-full bg-secondary border border-border text-muted-foreground text-[10px] font-bold flex items-center justify-center cursor-help select-none">?</span>
+                <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 rounded-lg bg-foreground text-background text-xs px-3 py-2 leading-relaxed opacity-0 group-hover/tip:opacity-100 transition-opacity z-20 shadow-lg">
+                  ตัวเลขน้อย = แสดงก่อน<br />เช่น Order 1 ขึ้นก่อน Order 5<br />ถ้าเท่ากันจะเรียงตามวันที่สร้าง
+                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground" />
+                </span>
+              </span>
               <input type="number" name="order" value={order} onChange={(e) => setOrder(Number(e.target.value))}
                 className="w-16 rounded-lg border border-border bg-secondary/40 px-2 py-1.5 text-sm outline-none focus:border-primary/60 text-center" />
             </div>
@@ -166,6 +181,16 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
   );
 }
 
+const TABS = [
+  { value: "all",     label: "ทั้งหมด" },
+  { value: "living",  label: "Living Room" },
+  { value: "dining",  label: "Dining Room" },
+  { value: "bedroom", label: "Bedroom" },
+  { value: "working", label: "Working Room" },
+  { value: "lighting",label: "Lighting" },
+  { value: "ornament",label: "Ornament" },
+];
+
 const categoryLabel: Record<string, string> = {
   living: "Living Room", dining: "Dining Room", bedroom: "Bedroom",
   working: "Working Room", lighting: "Lighting", ornament: "Ornament",
@@ -175,6 +200,9 @@ export function ProductsClient({ products }: { products: Product[] }) {
   const router = useRouter();
   const [drawer, setDrawer] = useState<Product | "new" | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [activeTab, setActiveTab] = useState("all");
+
+  const filtered = activeTab === "all" ? products : products.filter((p) => p.category === activeTab);
 
   function handleDelete(id: string) {
     if (!confirm("ลบสินค้านี้?")) return;
@@ -197,9 +225,34 @@ export function ProductsClient({ products }: { products: Product[] }) {
         </button>
       </div>
 
+      {/* Filter tabs */}
+      <div className="flex gap-1 mb-4 overflow-x-auto pb-1">
+        {TABS.map((tab) => {
+          const count = tab.value === "all" ? products.length : products.filter((p) => p.category === tab.value).length;
+          return (
+            <button
+              key={tab.value}
+              onClick={() => setActiveTab(tab.value)}
+              className={`shrink-0 px-3.5 py-1.5 rounded-lg text-sm transition-colors flex items-center gap-1.5 ${
+                activeTab === tab.value
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              }`}
+            >
+              {tab.label}
+              <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab.value ? "bg-white/20" : "bg-border"}`}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       <div className="rounded-xl border border-border overflow-hidden">
-        {products.length === 0 ? (
-          <div className="p-12 text-center text-sm text-muted-foreground">ยังไม่มีสินค้า</div>
+        {filtered.length === 0 ? (
+          <div className="p-12 text-center text-sm text-muted-foreground">
+            {products.length === 0 ? "ยังไม่มีสินค้า" : "ไม่มีสินค้าในหมวดนี้"}
+          </div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-secondary/50 border-b border-border">
@@ -212,7 +265,7 @@ export function ProductsClient({ products }: { products: Product[] }) {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => (
+              {filtered.map((p) => (
                 <tr key={p.id} className="border-b border-border last:border-0 hover:bg-secondary/30">
                   <td className="px-4 py-3">
                     <div className="relative w-10 h-10 rounded-md overflow-hidden bg-secondary">
