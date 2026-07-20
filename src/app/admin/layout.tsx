@@ -21,7 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="px-5 py-4 border-b border-border">
           <Link href="/admin" className="flex items-center gap-2.5">
             <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-border">
-              <Image src="/logo.jpg" alt="LeoAngelo" fill className="object-cover" />
+              <Image src="/logo/Logo_for signature.jpg" alt="LeoAngelo" fill className="object-cover" />
             </div>
             <span className="font-semibold text-sm gold-text" style={{ fontFamily: "var(--font-heading)" }}>
               LeoAngelo

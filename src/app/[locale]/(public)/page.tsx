@@ -11,15 +11,40 @@ import Image from "next/image";
 const BASE = "http://www.leoangelo.co.th/wp-content/uploads";
 
 const SLIDES = [
-  "/slider/Slider001-L.png",
-  "/slider/Slider002-L.png",
-  "/slider/Slider003-L.png",
-  "/slider/Slider004-L.png",
-  "/slider/Slider006-L.png",
-  "/slider/Slider007-L.png",
-  "/slider/Slider008-L.png",
-  "/slider/Slider009-L.png",
-  "/slider/Slider010-L.png",
+  "/slider/Bangpli-Bed-DIning1-Logo.jpg",
+  "/slider/Bangpli-Living2-Logo.jpg",
+  "/slider/Bangpli-Stair2-Logo.jpg",
+  "/slider/Bangpli-Wall Lamp4-Logo.jpg",
+  "/slider/Bangpli-Working3-Logo.jpg",
+  "/slider/KritP1-Dining3-Logo.jpg",
+  "/slider/Nont-Bed4-Logo.jpg",
+  "/slider/Nont-Bed6-Logo.jpg",
+  "/slider/Nont-Chandelier1-Logo.jpg",
+  "/slider/Nont-Dining1-Logo.jpg",
+  "/slider/Nont-Dining3-Logo.jpg",
+  "/slider/Nont-Living6-Logo.jpg",
+  "/slider/Nont-Living8-Logo.jpg",
+  "/slider/Nont-Stair Hall3-Logo.jpg",
+  "/slider/Nont-Working3-Logo.jpg",
+  "/slider/OP-BED-7-Logo.jpg",
+  "/slider/OP-BED-D2-Logo.jpg",
+  "/slider/OP-Bed-Green1-Logo.jpg",
+  "/slider/OP-Bed-Logo.jpg",
+  "/slider/OP-Bed2-Logo.jpg",
+  "/slider/OP-Dining3-Logo.jpg",
+  "/slider/OP-Family3-Logo.jpg",
+  "/slider/OP-Foyer-Chanderlier-Logo.jpg",
+  "/slider/OP-Nook3-Logo.jpg",
+  "/slider/OP-Nook5-Logo.jpg",
+  "/slider/OP_ห้องลูกชาย 1-Logo.jpg",
+  "/slider/OP_ห้องลูกชาย 29-Logo.jpg",
+  "/slider/SS1-Living Room-Logo.jpg",
+  "/slider/SS1-Working2-Logo.jpg",
+  "/slider/SS2-Buddha-1-Logo.jpg",
+  "/slider/SS2-Dining5-Logo.jpg",
+  "/slider/SS2-Walkin-Logo.jpg",
+  "/slider/Srinakarin2-Dining3-Logo.jpg",
+  "/slider/Srinakarin2-Living3-Logo.jpg",
 ];
 
 const fadeUp: Variants = {
@@ -81,14 +106,24 @@ function TestimonialCard({ text, author, role, delay }: { text: string; author: 
   );
 }
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function Home() {
   const t = useTranslations("home");
+  const [slides] = useState(() => shuffle(SLIDES));
   const [slide, setSlide] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => setSlide(s => (s + 1) % SLIDES.length), 4500);
+    const id = setInterval(() => setSlide(s => (s + 1) % slides.length), 4500);
     return () => clearInterval(id);
-  }, []);
+  }, [slides.length]);
 
   const heroRef = useRef(null);
   const heroInView = useInView(heroRef, { once: true });
@@ -104,10 +139,10 @@ export default function Home() {
   const ctaInView = useInView(ctaRef, { once: true, margin: "-80px" });
 
   const collections = [
-    { id: "living", title: t("col_living_label"), subtitle: t("col_living_name"), image: `${BASE}/2014/12/Portfolio-LivingRoom.jpg`, href: "/collections#living" },
-    { id: "dining", title: t("col_dining_label"), subtitle: t("col_dining_name"), image: `${BASE}/2014/12/Portfolio-Dining.jpg`, href: "/collections#dining" },
-    { id: "bedroom", title: t("col_bedroom_label"), subtitle: t("col_bedroom_name"), image: `${BASE}/2014/12/Bedroom-01.png`, href: "/collections#bedroom" },
-    { id: "working", title: t("col_working_label"), subtitle: t("col_working_name"), image: `${BASE}/2014/10/leoAngelo-Zanaboni-006-w960-300x139.jpg`, href: "/collections#working" },
+    { id: "living", title: t("col_living_label"), subtitle: t("col_living_name"), image: "/collections/living/Nont-Living8-Logo.jpg", href: "/collections#living" },
+    { id: "dining", title: t("col_dining_label"), subtitle: t("col_dining_name"), image: "/collections/dining/Mali-Dining1-Logo.jpg", href: "/collections#dining" },
+    { id: "bedroom", title: t("col_bedroom_label"), subtitle: t("col_bedroom_name"), image: "/collections/bedroom/OP-BED-7-Logo.jpg", href: "/collections#bedroom" },
+    { id: "working", title: t("col_working_label"), subtitle: t("col_working_name"), image: "/collections/working/OP-Working2-Logo.jpg", href: "/collections#working" },
   ];
 
   const values = [
@@ -122,7 +157,7 @@ export default function Home() {
       {/* Hero */}
       <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[oklch(0.10_0.022_52)]">
         {/* Carousel — contained so ornate frames show in full */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0">
           <AnimatePresence initial={false}>
             <motion.div
               key={slide}
@@ -130,23 +165,20 @@ export default function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1.2 }}
-              className="absolute inset-0 flex items-center justify-center p-6 md:p-16"
+              className="absolute inset-0"
             >
-              <div className="relative w-full max-w-5xl" style={{ aspectRatio: "940/500" }}>
-                <Image
-                  src={SLIDES[slide]}
-                  alt="LeoAngelo Classic Furniture"
-                  fill
-                  className="object-contain"
-                  priority={slide === 0}
-                  sizes="(max-width: 1280px) 100vw, 1280px"
-                />
-              </div>
+              <Image
+                src={slides[slide]}
+                alt="LeoAngelo Classic Furniture"
+                fill
+                className="object-cover object-center"
+                priority={slide === 0}
+                sizes="100vw"
+              />
             </motion.div>
           </AnimatePresence>
-          {/* Darken edges so text reads clearly */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-transparent to-black/75 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
+          {/* Darken for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 pointer-events-none" />
         </div>
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-primary/10 blur-[140px] pointer-events-none" />
 
@@ -157,7 +189,7 @@ export default function Home() {
           <motion.h1 custom={1} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-6xl md:text-8xl font-light tracking-wide mb-4 leading-tight">
             {t("hero_h1")}
           </motion.h1>
-          <motion.h1 custom={2} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-5xl md:text-7xl font-semibold italic tracking-wide mb-8 leading-tight gold-text">
+          <motion.h1 custom={2} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-5xl md:text-7xl font-semibold italic tracking-wide mb-8 leading-tight text-white">
             {t("hero_h2")}
           </motion.h1>
           <motion.p custom={3} variants={fadeUp} initial="hidden" animate={heroInView ? "show" : "hidden"} className="text-lg text-white/65 max-w-xl mx-auto mb-12 leading-relaxed">
@@ -239,10 +271,10 @@ export default function Home() {
             </motion.div>
           </div>
           <motion.div initial={{ opacity: 0, x: 30 }} animate={aboutInView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.2, duration: 0.6 }} className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-            <Image src="/leoAngelo-02_PreeDee020-w960.jpg" alt="LeoAngelo Showroom" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
+            <Image src="/slider/Bangpli-Stair2-Logo.jpg" alt="LeoAngelo Showroom" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
             <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-transparent" />
             <div className="absolute bottom-5 right-5 bg-card/90 backdrop-blur-sm rounded-2xl border border-border p-5 text-center">
-              <p className="text-3xl font-semibold gold-text font-display">12+</p>
+              <p className="text-3xl font-semibold gold-text font-display">22+</p>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">{t("about_stat")}</p>
             </div>
           </motion.div>

@@ -30,7 +30,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="flex items-center mb-5">
-              <Image src="/LeoAngelo-Logo_W347.png" alt="LeoAngelo" width={180} height={50} className="h-12 w-auto object-contain" />
+              <Image src="/logo/LeoAngelo-Logo_W347.png" alt="LeoAngelo" width={180} height={50} className="h-12 w-auto object-contain" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-xs">{t("desc")}</p>
             <ul className="space-y-2">

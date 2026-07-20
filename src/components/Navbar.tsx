@@ -59,7 +59,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <Image src="/LeoAngelo-Logo_W347.png" alt="LeoAngelo" width={160} height={44} className="h-10 w-auto object-contain" />
+            <Image src="/logo/LeoAngelo-Logo_W347.png" alt="LeoAngelo" width={160} height={44} className="h-10 w-auto object-contain" />
           </Link>
 
           {/* Desktop nav */}

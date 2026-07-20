@@ -41,7 +41,7 @@ function LoginForm() {
     <div className="relative w-full max-w-sm bg-card border border-border rounded-2xl shadow-lg p-8">
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-border mb-4">
-          <Image src="/logo.jpg" alt="LeoAngelo" fill className="object-cover" />
+          <Image src="/logo/Logo_for signature.jpg" alt="LeoAngelo" fill className="object-cover" />
         </div>
         <h1 className="text-2xl font-semibold font-display">Admin Login</h1>
         <p className="text-sm text-muted-foreground mt-1">LeoAngelo Admin Panel</p>
