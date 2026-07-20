@@ -45,7 +45,7 @@ const SECTIONS_EN = [
     title: "6. Contact Us",
     body: "To exercise your rights, request data deletion, or for any privacy-related questions, please contact:",
     contact: {
-      email: "hello@leoangelo.co.th",
+      email: "info@leoangelo.com",
       phone: "02-561-4209 (Mon–Fri 10:00–18:00)",
       address: "Leo Angelo Co., Ltd., Bangkok, Thailand",
     },
@@ -96,7 +96,7 @@ const SECTIONS_TH = [
     title: "6. ติดต่อเรา",
     body: "หากท่านต้องการใช้สิทธิ ขอลบข้อมูล หรือมีคำถามเกี่ยวกับนโยบายนี้ กรุณาติดต่อ:",
     contact: {
-      email: "hello@leoangelo.co.th",
+      email: "info@leoangelo.com",
       phone: "02-561-4209 (จ.–ศ. 10:00–18:00 น.)",
       address: "บริษัท ลีโอ แอนเจลโล่ จำกัด กรุงเทพมหานคร ประเทศไทย",
     },

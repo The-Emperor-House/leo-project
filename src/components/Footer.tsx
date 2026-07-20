@@ -44,7 +44,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4 shrink-0 text-primary" />
-                <a href="mailto:hello@leoangelo.co.th" className="hover:text-foreground transition-colors">hello@leoangelo.co.th</a>
+                <a href="mailto:info@leoangelo.com" className="hover:text-foreground transition-colors">info@leoangelo.com</a>
               </li>
             </ul>
             <div className="flex gap-3 mt-5">
