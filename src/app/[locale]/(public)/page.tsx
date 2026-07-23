@@ -117,8 +117,12 @@ function shuffle<T>(arr: T[]): T[] {
 
 export default function Home() {
   const t = useTranslations("home");
-  const [slides] = useState(() => shuffle(SLIDES));
+  const [slides, setSlides] = useState(SLIDES);
   const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    setSlides(shuffle(SLIDES));
+  }, []);
 
   useEffect(() => {
     const id = setInterval(() => setSlide(s => (s + 1) % slides.length), 4500);
@@ -177,8 +181,7 @@ export default function Home() {
               />
             </motion.div>
           </AnimatePresence>
-          {/* Darken for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 pointer-events-none" />
+          <div className="absolute inset-0 bg-black/25 pointer-events-none" />
         </div>
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-primary/10 blur-[140px] pointer-events-none" />
 
