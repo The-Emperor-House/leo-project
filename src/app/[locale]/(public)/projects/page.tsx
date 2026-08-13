@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Link } from "@/navigation";
 import { MapPin, Images } from "lucide-react";
 import { Pagination } from "@/components/Pagination";
+import { getTranslations } from "next-intl/server";
 
 const PAGE_SIZE = 12;
 
@@ -13,6 +14,7 @@ export default async function ProjectsPage({
 }) {
   const sp = await searchParams;
   const page = Math.max(1, parseInt(sp.page ?? "1"));
+  const t = await getTranslations("projects");
 
   const [projects, total] = await Promise.all([
     prisma.project.findMany({
@@ -30,12 +32,12 @@ export default async function ProjectsPage({
     <main>
       {/* Hero */}
       <section className="py-24 px-6 text-center damask-bg text-white">
-        <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-4">Portfolio</p>
+        <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-4">{t("label")}</p>
         <h1 className="text-5xl md:text-6xl font-light mb-4">
-          <span className="gold-text font-semibold italic">ผลงานของเรา</span>
+          <span className="gold-text font-semibold italic">{t("heading")}</span>
         </h1>
         <p className="text-white/60 max-w-xl mx-auto text-base leading-relaxed">
-          รวมผลงานการตกแต่งบ้านด้วยเฟอร์นิเจอร์คลาสสิคจากอิตาลี ทุกโปรเจคออกแบบโดยทีมงานผู้เชี่ยวชาญ
+          {t("sub")}
         </p>
       </section>
 
@@ -43,7 +45,7 @@ export default async function ProjectsPage({
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           {projects.length === 0 ? (
-            <p className="text-center text-muted-foreground py-20">ยังไม่มีผลงาน</p>
+            <p className="text-center text-muted-foreground py-20">{t("empty")}</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((p) => {
@@ -66,11 +68,11 @@ export default async function ProjectsPage({
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="absolute bottom-4 left-4 right-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                        <span className="text-white text-sm font-medium">ดูผลงาน →</span>
+                        <span className="text-white text-sm font-medium">{t("view")} →</span>
                       </div>
                       {p.featured && (
                         <div className="absolute top-3 left-3 bg-primary/90 text-primary-foreground text-xs px-2.5 py-1 rounded-full font-medium">
-                          Featured
+                          {t("featured")}
                         </div>
                       )}
                       {imgCount > 0 && (

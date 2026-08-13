@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { motion, useInView, AnimatePresence, type Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, Gem, Clock, Truck, Star, ChevronRight } from "lucide-react";
+import { ArrowRight, Shield, Gem, Clock, Truck, ChevronRight } from "lucide-react";
 import { Link } from "@/navigation";
 import Image from "next/image";
 
@@ -91,21 +91,6 @@ function ValueCard({ icon: Icon, title, desc, delay }: { icon: React.ElementType
   );
 }
 
-function TestimonialCard({ text, author, role, delay }: { text: string; author: string; role: string; delay: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
-  return (
-    <motion.div ref={ref} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay, duration: 0.5 }} className="rounded-2xl border border-border bg-card p-7 flex flex-col gap-4">
-      <div className="flex gap-1">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className="w-4 h-4 fill-primary text-primary" />)}</div>
-      <p className="text-base italic text-foreground/80 leading-relaxed flex-1 font-display">&ldquo;{text}&rdquo;</p>
-      <div>
-        <p className="font-semibold text-sm text-foreground">{author}</p>
-        <p className="text-xs text-muted-foreground">{role}</p>
-      </div>
-    </motion.div>
-  );
-}
-
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -135,8 +120,6 @@ export default function Home() {
   const collectionsInView = useInView(collectionsRef, { once: true, margin: "-60px" });
   const valuesRef = useRef(null);
   const valuesInView = useInView(valuesRef, { once: true, margin: "-60px" });
-  const testimonialsRef = useRef(null);
-  const testimonialsInView = useInView(testimonialsRef, { once: true, margin: "-60px" });
   const aboutRef = useRef(null);
   const aboutInView = useInView(aboutRef, { once: true, margin: "-80px" });
   const ctaRef = useRef(null);
@@ -294,25 +277,6 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((v, i) => <ValueCard key={i} {...v} delay={i * 0.1} />)}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-28 px-6 linen-bg border-y border-border">
-        <div className="max-w-6xl mx-auto">
-          <div ref={testimonialsRef}>
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={testimonialsInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }} className="text-primary text-xs font-semibold uppercase tracking-[0.2em] text-center mb-3">
-              {t("testi_label")}
-            </motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 30 }} animate={testimonialsInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.08, duration: 0.6 }} className="text-4xl md:text-5xl font-light text-center mb-14 text-foreground">
-              <span className="gold-text font-semibold italic">{t("testi_heading")}</span>
-            </motion.h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <TestimonialCard text={t("testi1_text")} author={t("testi1_author")} role={t("testi1_role")} delay={0} />
-            <TestimonialCard text={t("testi2_text")} author={t("testi2_author")} role={t("testi2_role")} delay={0.1} />
-            <TestimonialCard text={t("testi3_text")} author={t("testi3_author")} role={t("testi3_role")} delay={0.2} />
           </div>
         </div>
       </section>

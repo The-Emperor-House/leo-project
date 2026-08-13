@@ -91,8 +91,8 @@
    Change locale font: edit [data-locale="th"] block only.
    ─────────────────────────────────────────────────────────────────────────── */
 :root {
-  --font-display: var(--font-heading), Georgia, serif;
-  --font-ui:      var(--font-body), system-ui, sans-serif;
+  --font-display: var(--font-heading), var(--font-thai), Georgia, serif;
+  --font-ui:      var(--font-body), var(--font-thai), system-ui, sans-serif;
 }
 
 /* Thai locale — IBM Plex Sans Thai for everything, no synthetic italic */

@@ -65,11 +65,11 @@ const PRODUCTS = [
 ];
 
 const PROJECTS = [
-  { title: "บ้านคุณสมชาย — สาทร", slug: "saladaeng-residence", location: "สาทร กรุงเทพฯ", description: "โครงการตกแต่งบ้านพักอาศัย 3 ชั้น สไตล์คลาสสิกอิตาเลียนเต็มรูปแบบ", style: "Italian Classic", featured: true, published: true, order: 1 },
-  { title: "Penthouse — The Ritz Sukhumvit", slug: "ritz-penthouse", location: "สุขุมวิท กรุงเทพฯ", description: "ห้องพักอาศัยระดับ Penthouse ชั้น 42 ตกแต่งด้วยเฟอร์นิเจอร์อิตาเลียนแท้", style: "Contemporary Italian", featured: true, published: true, order: 2 },
-  { title: "บ้านพักตากอากาศ — พัทยา", slug: "pattaya-villa", location: "พัทยา ชลบุรี", description: "วิลล่าริมทะเล 4 ห้องนอน ออกแบบให้ได้กลิ่นอายรีสอร์ทเมดิเตอร์เรเนียน", style: "Mediterranean", featured: false, published: true, order: 3 },
-  { title: "ออฟฟิศผู้บริหาร — อาคารสาทร", slug: "sathorn-executive-office", location: "สาทร กรุงเทพฯ", description: "ห้องทำงานผู้บริหารระดับสูง ชั้น 38 ตกแต่งด้วย Luxury Collection", style: "Executive Classic", featured: false, published: true, order: 4 },
-  { title: "คอนโดมิเนียม — ลุมพินี", slug: "lumpini-condo", location: "ลุมพินี กรุงเทพฯ", description: "ห้องคอนโด 180 ตร.ม. ออกแบบให้พื้นที่เปิดโล่งด้วยเฟอร์นิเจอร์สีครีมและทองอ่อน", style: "Italian Modern", featured: true, published: true, order: 5 },
+  { title: "Somchai Residence — Sathorn", slug: "saladaeng-residence", location: "Sathorn, Bangkok", description: "A 3-story residential interior project in a full Italian classic style.", style: "Italian Classic", featured: true, published: true, order: 1 },
+  { title: "Penthouse — The Ritz Sukhumvit", slug: "ritz-penthouse", location: "Sukhumvit, Bangkok", description: "A 42nd-floor penthouse residence furnished with authentic Italian furniture.", style: "Contemporary Italian", featured: true, published: true, order: 2 },
+  { title: "Beach Villa — Pattaya", slug: "pattaya-villa", location: "Pattaya, Chonburi", description: "A 4-bedroom seaside villa designed with a Mediterranean resort ambiance.", style: "Mediterranean", featured: false, published: true, order: 3 },
+  { title: "Executive Office — Sathorn Tower", slug: "sathorn-executive-office", location: "Sathorn, Bangkok", description: "A 38th-floor executive office furnished with the Luxury Collection.", style: "Executive Classic", featured: false, published: true, order: 4 },
+  { title: "Condominium — Lumpini", slug: "lumpini-condo", location: "Lumpini, Bangkok", description: "A 180 sq.m. condo unit opened up with cream and soft-gold furniture.", style: "Italian Modern", featured: true, published: true, order: 5 },
 ];
 
 async function main() {

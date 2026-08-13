@@ -171,6 +171,14 @@
     "title": "Privacy Policy",
     "updated": "Last updated: 29 June 2026"
   },
+  "projects": {
+    "label": "Portfolio",
+    "heading": "Our Portfolio",
+    "sub": "A collection of interior projects furnished with classic Italian furniture. Every project designed by our expert team.",
+    "empty": "No projects yet",
+    "view": "View Project",
+    "featured": "Featured"
+  },
   "footer": {
     "desc": "Importers of authentic classic Italian furniture. Handmade by master Italian craftsmen. Trusted for over 22 years.",
     "collections": "Collections",
