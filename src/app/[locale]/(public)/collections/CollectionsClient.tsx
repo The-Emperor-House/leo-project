@@ -179,7 +179,7 @@ function FeaturedSection({ products, onSelect }: { products: ProductItem[]; onSe
 }
 
 /* ── Category grid within a line section ── */
-function CategoryGrid({ category, products, onSelect }: { category: string; products: CategoryProducts; onSelect: (p: ProductItem) => void }) {
+function CategoryGrid({ category, products, onSelect, anchorId }: { category: string; products: CategoryProducts; onSelect: (p: ProductItem) => void; anchorId?: boolean }) {
   const [showAll, setShowAll] = useState(false);
   const { preview, rest } = products;
   const total = preview.length + rest.length;
@@ -187,7 +187,7 @@ function CategoryGrid({ category, products, onSelect }: { category: string; prod
   const displayed = showAll ? [...preview, ...rest] : preview;
 
   return (
-    <div className="mb-12 last:mb-0">
+    <div id={anchorId ? category : undefined} className="mb-12 last:mb-0 scroll-mt-24">
       <div className="flex items-center gap-3 mb-5">
         <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">{CAT_LABELS[category] ?? category}</h3>
         <span className="text-xs text-muted-foreground">({total} รายการ)</span>
@@ -234,7 +234,7 @@ function LineSection({ line, products, onSelect }: { line: string; products: Lin
 
         <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.15, duration: 0.6 }}>
           {["furniture", "lighting", "ornament", "hardwares"].map((cat) => (
-            <CategoryGrid key={cat} category={cat} products={products[cat] ?? { preview: [], rest: [] }} onSelect={onSelect} />
+            <CategoryGrid key={cat} category={cat} products={products[cat] ?? { preview: [], rest: [] }} onSelect={onSelect} anchorId={line === "classic"} />
           ))}
         </motion.div>
       </div>

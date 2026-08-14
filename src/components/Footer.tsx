@@ -10,10 +10,10 @@ export default function Footer() {
   const t = useTranslations("footer");
 
   const collections = [
-    { label: "Dining Room", href: "/collections#dining" },
-    { label: "Living Room", href: "/collections#living" },
-    { label: "Bedroom", href: "/collections#bedroom" },
-    { label: "Working Room", href: "/collections#working" },
+    { label: "Furniture", href: "/collections#furniture" },
+    { label: "Lighting", href: "/collections#lighting" },
+    { label: "Ornament", href: "/collections#ornament" },
+    { label: "Hardwares", href: "/collections#hardwares" },
   ];
 
   const company = [
