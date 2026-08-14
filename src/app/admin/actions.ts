@@ -4,17 +4,23 @@ import { cloudinary } from "@/lib/cloudinary";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+const UPLOAD_TIMEOUT_MS = 30_000;
+
 export async function uploadImage(formData: FormData): Promise<{ url: string }> {
   const file = formData.get("file") as File;
   const buffer = Buffer.from(await file.arrayBuffer());
-  return new Promise((resolve, reject) => {
+  const upload = new Promise<{ url: string }>((resolve, reject) => {
     cloudinary.uploader
       .upload_stream({ folder: "leoangelo", resource_type: "image" }, (err, result) => {
-        if (err || !result) return reject(err);
+        if (err || !result) return reject(err ?? new Error("Upload failed"));
         resolve({ url: result.secure_url });
       })
       .end(buffer);
   });
+  const timeout = new Promise<{ url: string }>((_, reject) =>
+    setTimeout(() => reject(new Error("Upload timed out")), UPLOAD_TIMEOUT_MS)
+  );
+  return Promise.race([upload, timeout]);
 }
 
 export async function updateInquiryStatus(formData: FormData) {

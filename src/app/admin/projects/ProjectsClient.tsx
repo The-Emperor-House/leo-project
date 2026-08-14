@@ -21,10 +21,10 @@ function toSlug(s: string) {
 const MAX_UPLOAD_MB = 20;
 
 function ImageUploadSlot({
-  url, onUploaded, onRemove, uploading, onUpload,
+  url, onUploaded, onRemove, uploading, onUpload, onCancel,
 }: {
   url: string; onUploaded: (u: string) => void; onRemove: () => void;
-  uploading: boolean; onUpload: (f: File) => void;
+  uploading: boolean; onUpload: (f: File) => void; onCancel?: () => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
@@ -40,21 +40,22 @@ function ImageUploadSlot({
             <X className="w-3 h-3" />
           </button>
         </>
+      ) : uploading ? (
+        <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-muted-foreground">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <button type="button" onClick={onCancel}
+            className="text-xs underline text-muted-foreground hover:text-foreground transition-colors">
+            ยกเลิก
+          </button>
+        </div>
       ) : (
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          disabled={uploading}
           className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
         >
-          {uploading ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : (
-            <>
-              <Upload className="w-5 h-5" />
-              <span className="text-xs">อัปโหลด</span>
-            </>
-          )}
+          <Upload className="w-5 h-5" />
+          <span className="text-xs">อัปโหลด</span>
           <input
             ref={inputRef}
             type="file"
@@ -89,18 +90,29 @@ function ProjectDrawer({
   );
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
+  const uploadTokens = useRef<Record<string, number>>({});
+
+  function cancelUpload(isCover: boolean, idx?: number) {
+    const key = isCover ? "cover" : `idx-${idx}`;
+    uploadTokens.current[key] = (uploadTokens.current[key] ?? 0) + 1;
+    if (isCover) setUploadingCover(false); else setUploadingIdx(null);
+  }
 
   async function handleUpload(file: File, isCover: boolean, idx?: number) {
     if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
       alert(`ไฟล์ใหญ่เกินไป (${(file.size / 1024 / 1024).toFixed(1)}MB) ขนาดสูงสุดที่อัปโหลดได้คือ ${MAX_UPLOAD_MB}MB`);
       return;
     }
+    const key = isCover ? "cover" : `idx-${idx}`;
+    const token = (uploadTokens.current[key] ?? 0) + 1;
+    uploadTokens.current[key] = token;
     if (isCover) setUploadingCover(true);
     else setUploadingIdx(idx ?? null);
     try {
       const fd = new FormData();
       fd.append("file", file);
       const { url } = await uploadImage(fd);
+      if (uploadTokens.current[key] !== token) return; // cancelled
       if (isCover) setCoverImage(url);
       else {
         setGalleryImages((prev) => {
@@ -111,10 +123,13 @@ function ProjectDrawer({
         });
       }
     } catch {
+      if (uploadTokens.current[key] !== token) return; // cancelled
       alert("อัปโหลดรูปไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป (สูงสุด 20MB) หรือเกิดข้อผิดพลาด กรุณาลองใหม่");
     } finally {
-      if (isCover) setUploadingCover(false);
-      else setUploadingIdx(null);
+      if (uploadTokens.current[key] === token) {
+        if (isCover) setUploadingCover(false);
+        else setUploadingIdx(null);
+      }
     }
   }
 
@@ -161,6 +176,7 @@ function ProjectDrawer({
                 onRemove={() => setCoverImage("")}
                 uploading={uploadingCover}
                 onUpload={(f) => handleUpload(f, true)}
+                onCancel={() => cancelUpload(true)}
               />
               <input type="hidden" name="coverImage" value={coverImage} />
             </div>
@@ -232,6 +248,7 @@ function ProjectDrawer({
                   onRemove={() => setGalleryImages((prev) => prev.filter((_, i) => i !== idx))}
                   uploading={uploadingIdx === idx}
                   onUpload={(f) => handleUpload(f, false, idx)}
+                  onCancel={() => cancelUpload(false, idx)}
                 />
               ))}
             </div>

@@ -39,9 +39,9 @@ function buildFilterUrl(line?: string, category?: string) {
   return `/admin/products${q ? `?${q}` : ""}`;
 }
 
-function ImageSlot({ url, uploading, onUpload, onRemove }: {
+function ImageSlot({ url, uploading, onUpload, onRemove, onCancel }: {
   url: string; uploading: boolean;
-  onUpload: (f: File) => void; onRemove: () => void;
+  onUpload: (f: File) => void; onRemove: () => void; onCancel?: () => void;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   return (
@@ -54,10 +54,18 @@ function ImageSlot({ url, uploading, onUpload, onRemove }: {
             <X className="w-3 h-3" />
           </button>
         </>
+      ) : uploading ? (
+        <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-muted-foreground">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <button type="button" onClick={onCancel}
+            className="text-xs underline text-muted-foreground hover:text-foreground transition-colors">
+            ยกเลิก
+          </button>
+        </div>
       ) : (
-        <button type="button" onClick={() => ref.current?.click()} disabled={uploading}
+        <button type="button" onClick={() => ref.current?.click()}
           className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors">
-          {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Upload className="w-5 h-5" /><span className="text-xs">อัปโหลด</span></>}
+          <Upload className="w-5 h-5" /><span className="text-xs">อัปโหลด</span>
           <input ref={ref} type="file" accept="image/*" className="hidden"
             onChange={(e) => { const f = e.target.files?.[0]; if (f) onUpload(f); }} />
         </button>
@@ -80,22 +88,36 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
   const [gallery, setGallery] = useState<string[]>(product?.images ? JSON.parse(product.images) : []);
   const [uploadingMain, setUploadingMain] = useState(false);
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
+  const uploadTokens = useRef<Record<string, number>>({});
+
+  function cancelUpload(isMain: boolean, idx?: number) {
+    const key = isMain ? "main" : `idx-${idx}`;
+    uploadTokens.current[key] = (uploadTokens.current[key] ?? 0) + 1;
+    if (isMain) setUploadingMain(false); else setUploadingIdx(null);
+  }
 
   async function handleUpload(file: File, isMain: boolean, idx?: number) {
     if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
       alert(`ไฟล์ใหญ่เกินไป (${(file.size / 1024 / 1024).toFixed(1)}MB) ขนาดสูงสุดที่อัปโหลดได้คือ ${MAX_UPLOAD_MB}MB`);
       return;
     }
+    const key = isMain ? "main" : `idx-${idx}`;
+    const token = (uploadTokens.current[key] ?? 0) + 1;
+    uploadTokens.current[key] = token;
     if (isMain) setUploadingMain(true); else setUploadingIdx(idx ?? null);
     try {
       const fd = new FormData(); fd.append("file", file);
       const { url } = await uploadImage(fd);
+      if (uploadTokens.current[key] !== token) return; // cancelled
       if (isMain) setMainImage(url);
       else setGallery((prev) => { const next = [...prev]; if (idx !== undefined && idx < next.length) next[idx] = url; else next.push(url); return next; });
     } catch {
+      if (uploadTokens.current[key] !== token) return; // cancelled
       alert("อัปโหลดรูปไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป (สูงสุด 20MB) หรือเกิดข้อผิดพลาด กรุณาลองใหม่");
     } finally {
-      if (isMain) setUploadingMain(false); else setUploadingIdx(null);
+      if (uploadTokens.current[key] === token) {
+        if (isMain) setUploadingMain(false); else setUploadingIdx(null);
+      }
     }
   }
 
@@ -123,7 +145,8 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
             <label className="text-sm font-medium">ภาพหลัก</label>
             <div className="max-w-xs">
               <ImageSlot url={mainImage} uploading={uploadingMain}
-                onUpload={(f) => handleUpload(f, true)} onRemove={() => setMainImage("")} />
+                onUpload={(f) => handleUpload(f, true)} onRemove={() => setMainImage("")}
+                onCancel={() => cancelUpload(true)} />
               <input type="hidden" name="imageUrl" value={mainImage} />
             </div>
           </div>
@@ -165,7 +188,8 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
               {[...gallery, ""].map((url, idx) => (
                 <ImageSlot key={idx} url={url} uploading={uploadingIdx === idx}
                   onUpload={(f) => handleUpload(f, false, idx)}
-                  onRemove={() => setGallery((prev) => prev.filter((_, i) => i !== idx))} />
+                  onRemove={() => setGallery((prev) => prev.filter((_, i) => i !== idx))}
+                  onCancel={() => cancelUpload(false, idx)} />
               ))}
             </div>
           </div>
