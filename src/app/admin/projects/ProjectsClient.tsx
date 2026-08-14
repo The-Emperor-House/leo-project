@@ -18,6 +18,8 @@ function toSlug(s: string) {
   return s.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "").replace(/--+/g, "-");
 }
 
+const MAX_UPLOAD_MB = 20;
+
 function ImageUploadSlot({
   url, onUploaded, onRemove, uploading, onUpload,
 }: {
@@ -89,6 +91,10 @@ function ProjectDrawer({
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
 
   async function handleUpload(file: File, isCover: boolean, idx?: number) {
+    if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
+      alert(`ไฟล์ใหญ่เกินไป (${(file.size / 1024 / 1024).toFixed(1)}MB) ขนาดสูงสุดที่อัปโหลดได้คือ ${MAX_UPLOAD_MB}MB`);
+      return;
+    }
     if (isCover) setUploadingCover(true);
     else setUploadingIdx(idx ?? null);
     try {

@@ -29,6 +29,8 @@ const CATEGORIES = [
 const LINE_LABEL: Record<string, string> = { classic: "Classic", luxury: "Luxury" };
 const CAT_LABEL: Record<string, string> = { furniture: "Furniture", lighting: "Lighting", ornament: "Ornament", hardwares: "Hardwares" };
 
+const MAX_UPLOAD_MB = 20;
+
 function buildFilterUrl(line?: string, category?: string) {
   const p = new URLSearchParams();
   if (line) p.set("line", line);
@@ -80,6 +82,10 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
 
   async function handleUpload(file: File, isMain: boolean, idx?: number) {
+    if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
+      alert(`ไฟล์ใหญ่เกินไป (${(file.size / 1024 / 1024).toFixed(1)}MB) ขนาดสูงสุดที่อัปโหลดได้คือ ${MAX_UPLOAD_MB}MB`);
+      return;
+    }
     if (isMain) setUploadingMain(true); else setUploadingIdx(idx ?? null);
     try {
       const fd = new FormData(); fd.append("file", file);
