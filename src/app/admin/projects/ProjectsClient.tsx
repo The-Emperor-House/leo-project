@@ -91,18 +91,24 @@ function ProjectDrawer({
   async function handleUpload(file: File, isCover: boolean, idx?: number) {
     if (isCover) setUploadingCover(true);
     else setUploadingIdx(idx ?? null);
-    const fd = new FormData();
-    fd.append("file", file);
-    const { url } = await uploadImage(fd);
-    if (isCover) { setCoverImage(url); setUploadingCover(false); }
-    else {
-      setGalleryImages((prev) => {
-        const next = [...prev];
-        if (idx !== undefined && idx < next.length) next[idx] = url;
-        else next.push(url);
-        return next;
-      });
-      setUploadingIdx(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const { url } = await uploadImage(fd);
+      if (isCover) setCoverImage(url);
+      else {
+        setGalleryImages((prev) => {
+          const next = [...prev];
+          if (idx !== undefined && idx < next.length) next[idx] = url;
+          else next.push(url);
+          return next;
+        });
+      }
+    } catch {
+      alert("อัปโหลดรูปไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป (สูงสุด 20MB) หรือเกิดข้อผิดพลาด กรุณาลองใหม่");
+    } finally {
+      if (isCover) setUploadingCover(false);
+      else setUploadingIdx(null);
     }
   }
 

@@ -27,7 +27,8 @@ export async function updateInquiryStatus(formData: FormData) {
 export async function deleteProduct(formData: FormData) {
   await prisma.product.delete({ where: { id: formData.get("id") as string } });
   revalidatePath("/admin/products");
-  revalidatePath("/collections");
+  revalidatePath("/en/collections");
+  revalidatePath("/th/collections");
 }
 
 export async function upsertProduct(formData: FormData) {
@@ -50,5 +51,6 @@ export async function upsertProduct(formData: FormData) {
     await prisma.product.create({ data });
   }
   revalidatePath("/admin/products");
-  revalidatePath("/collections");
+  revalidatePath("/en/collections");
+  revalidatePath("/th/collections");
 }

@@ -81,12 +81,15 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
 
   async function handleUpload(file: File, isMain: boolean, idx?: number) {
     if (isMain) setUploadingMain(true); else setUploadingIdx(idx ?? null);
-    const fd = new FormData(); fd.append("file", file);
-    const { url } = await uploadImage(fd);
-    if (isMain) { setMainImage(url); setUploadingMain(false); }
-    else {
-      setGallery((prev) => { const next = [...prev]; if (idx !== undefined && idx < next.length) next[idx] = url; else next.push(url); return next; });
-      setUploadingIdx(null);
+    try {
+      const fd = new FormData(); fd.append("file", file);
+      const { url } = await uploadImage(fd);
+      if (isMain) setMainImage(url);
+      else setGallery((prev) => { const next = [...prev]; if (idx !== undefined && idx < next.length) next[idx] = url; else next.push(url); return next; });
+    } catch {
+      alert("อัปโหลดรูปไม่สำเร็จ ไฟล์อาจมีขนาดใหญ่เกินไป (สูงสุด 20MB) หรือเกิดข้อผิดพลาด กรุณาลองใหม่");
+    } finally {
+      if (isMain) setUploadingMain(false); else setUploadingIdx(null);
     }
   }
 
