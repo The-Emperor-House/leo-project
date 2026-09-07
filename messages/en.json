@@ -1,6 +1,6 @@
 {
   "nav": {
-    "collections": "Collections",
+    "collections": "Products",
     "projects": "Projects",
     "about": "About Us",
     "contact": "Contact",
@@ -181,7 +181,7 @@
   },
   "footer": {
     "desc": "Importers of authentic classic Italian furniture. Handmade by master Italian craftsmen. Trusted for over 22 years.",
-    "collections": "Collections",
+    "collections": "Products",
     "company": "Company",
     "craftsmanship": "Our Craftsmanship",
     "quote": "Quality is remembered long after price is forgotten.",
