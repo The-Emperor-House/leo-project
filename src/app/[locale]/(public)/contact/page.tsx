@@ -38,7 +38,7 @@ export default function ContactPage() {
   const contactInfo = [
     { icon: Phone, label: t("phone_label"), value: "02-561-4209", href: "tel:025614209" },
     { icon: Clock, label: t("hours_label"), value: t("hours_value") },
-    { icon: Mail, label: t("email_label"), value: "info@leoangelo.com", href: "mailto:info@leoangelo.com" },
+    { icon: Mail, label: t("email_label"), value: "info@leoangelo.co.th", href: "mailto:info@leoangelo.co.th" },
     { icon: MapPin, label: t("map_label"), value: "www.leoangelo.co.th", href: "http://www.leoangelo.co.th" },
   ];
 
