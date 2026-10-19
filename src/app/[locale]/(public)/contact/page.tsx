@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle, Loader2 } from "lucide-react";
 import { Link } from "@/navigation";
 
 export default function ContactPage() {
@@ -18,6 +18,9 @@ export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", interest: "", message: "" });
   const [consent, setConsent] = useState(false);
   const [consentError, setConsentError] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [honeypot, setHoneypot] = useState("");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -27,11 +30,17 @@ export default function ContactPage() {
     e.preventDefault();
     if (!consent) { setConsentError(true); return; }
     setConsentError(false);
+    if (sending) return;
+    setSending(true);
+    setSubmitError("");
     try {
-      const res = await fetch("/api/inquiries", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+      const res = await fetch("/api/inquiries", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, consent, website: honeypot }) });
       if (res.ok) setSubmitted(true);
+      else setSubmitError(res.status === 429 ? t("error_rate_limit") : t("error_submit"));
     } catch {
-      setSubmitted(true);
+      setSubmitError(t("error_submit"));
+    } finally {
+      setSending(false);
     }
   }
 
@@ -162,8 +171,16 @@ export default function ContactPage() {
                       )}
                     </div>
 
-                    <Button type="submit" size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground w-full h-12 tracking-wider gold-glow">
-                      {t("submit")} <Send className="ml-2 w-4 h-4" />
+                    {/* Honeypot — hidden from people, filled in by spam bots */}
+                    <input type="text" name="website" value={honeypot} onChange={(e) => setHoneypot(e.target.value)}
+                      tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+
+                    {submitError && (
+                      <p className="text-sm text-red-500 rounded-xl border border-red-400 bg-red-500/5 px-4 py-3">{submitError}</p>
+                    )}
+
+                    <Button type="submit" size="lg" disabled={sending} className="bg-primary hover:bg-primary/90 text-primary-foreground w-full h-12 tracking-wider gold-glow">
+                      {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{t("submit")} <Send className="ml-2 w-4 h-4" /></>}
                     </Button>
                   </form>
                 </>

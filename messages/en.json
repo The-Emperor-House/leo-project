@@ -2,6 +2,7 @@
   "nav": {
     "collections": "Products",
     "projects": "Projects",
+    "rooms": "Rooms",
     "about": "About Us",
     "contact": "Contact",
     "visit_showroom": "Visit Showroom",
@@ -102,7 +103,16 @@
     "custom_heading": "Looking for Custom Furniture?",
     "custom_desc": "We provide consultation and source furniture tailored to your space and preferences.",
     "custom_phone": "Tel. 02-561-4209 · Mon–Fri 10:00–18:00",
-    "custom_btn": "Contact Us"
+    "custom_btn": "Contact Us",
+    "enquire_prompt": "Interested in this piece? Contact us for pricing and more details.",
+    "featured_badge": "Featured",
+    "view_details": "View details",
+    "picks_label": "Editor's Pick",
+    "picks_heading_a": "Featured ",
+    "picks_heading_b": "Pieces",
+    "picks_count": "{count} pieces selected by our team",
+    "item_count": "({count} items)",
+    "show_more": "Show {count} more"
   },
   "about": {
     "hero_label": "About Us",
@@ -165,7 +175,9 @@
     "success_desc": "We've received your message and will get back to you within 1 business day. Thank you for your interest in LeoAngelo.",
     "consent_text": "I consent to Leo Angelo Co., Ltd. collecting my personal data (name, email, phone, and message) to respond to this inquiry, in accordance with the",
     "consent_link": "Privacy Policy",
-    "consent_required": "Please accept the Privacy Policy to continue"
+    "consent_required": "Please accept the Privacy Policy to continue",
+    "error_submit": "We couldn't send your message. Please try again, or call us at 02-561-4209.",
+    "error_rate_limit": "Too many messages sent. Please wait a few minutes and try again."
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -177,7 +189,22 @@
     "sub": "A collection of interior projects furnished with classic Italian furniture. Every project designed by our expert team.",
     "empty": "No projects yet",
     "view": "View Project",
-    "featured": "Featured"
+    "featured": "Featured",
+    "back_all": "All projects",
+    "photo_count": "{count} photos",
+    "photo_alt": "Photo {n}",
+    "cta_text": "Interested in furnishing your home with classic Italian furniture?",
+    "cta_btn": "Contact Us"
+  },
+  "rooms": {
+    "label": "Shop by Room",
+    "heading": "Furnish Every Room",
+    "sub": "Furniture, lighting and décor curated room by room — see how each piece comes together in a classic Italian interior.",
+    "empty": "No rooms yet",
+    "product_count": "{count, plural, =0 {No pieces yet} one {# piece} other {# pieces}}",
+    "back": "All rooms",
+    "room_empty": "No products in this room yet. Contact us and our team will help you put it together.",
+    "other_rooms": "Other rooms"
   },
   "footer": {
     "desc": "Importers of authentic classic Italian furniture. Handmade by master Italian craftsmen. Trusted for over 22 years.",

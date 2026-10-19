@@ -1,6 +1,7 @@
 import { auth, signOut } from "@/lib/auth";
+import { isAdminRole } from "@/lib/auth.config";
 import { redirect } from "next/navigation";
-import { LayoutDashboard, MessageSquare, Package, FileImage, LogOut, Globe, Users } from "lucide-react";
+import { LayoutDashboard, MessageSquare, Package, FileImage, LogOut, Globe, Users, DoorOpen } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -9,12 +10,14 @@ const navItems = [
   { href: "/admin/inquiries", label: "Inquiries", icon: MessageSquare },
   { href: "/admin/projects", label: "Projects", icon: FileImage },
   { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/rooms", label: "Rooms", icon: DoorOpen },
   { href: "/admin/users", label: "Users", icon: Users },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session) redirect("/login");
+  if (!isAdminRole((session.user as { role?: string } | undefined)?.role)) redirect("/");
 
   return (
     <div className="min-h-screen flex bg-background">

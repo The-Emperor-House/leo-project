@@ -8,20 +8,20 @@ import { ArrowRight, X, ChevronLeft, ChevronRight, ChevronDown } from "lucide-re
 import { Link } from "@/navigation";
 import Image from "next/image";
 
-const CAT_LABELS: Record<string, string> = {
+export const CAT_LABELS: Record<string, string> = {
   furniture: "Furniture", lighting: "Lighting", ornament: "Ornament", hardwares: "Hardwares",
 };
 const LINE_LABELS: Record<string, string> = { classic: "Classic", luxury: "Luxury" };
 
-type ProductItem = {
+export type ProductItem = {
   id: string; title: string; imageUrl: string | null; images: string | null;
   description: string; line: string; category: string; featured: boolean;
 };
-type CategoryProducts = { preview: ProductItem[]; rest: ProductItem[] };
+export type CategoryProducts = { preview: ProductItem[]; rest: ProductItem[] };
 type LineProducts = Record<string, CategoryProducts>;
 
 /* ── Product detail modal ── */
-function ProductModal({ product, onClose }: { product: ProductItem; onClose: () => void }) {
+export function ProductModal({ product, onClose }: { product: ProductItem; onClose: () => void }) {
   const gallery: string[] = product.images ? JSON.parse(product.images) : [];
   const allImages = [product.imageUrl, ...gallery].filter(Boolean) as string[];
   const [imgIdx, setImgIdx] = useState(0);
@@ -106,7 +106,7 @@ function ProductModal({ product, onClose }: { product: ProductItem; onClose: () 
                 )}
               </div>
               <div className="px-6 pb-6 pt-4 border-t border-border space-y-3 shrink-0">
-                <p className="text-xs text-muted-foreground">สนใจสินค้าชิ้นนี้? ติดต่อเราเพื่อสอบถามราคาและรายละเอียดเพิ่มเติม</p>
+                <p className="text-xs text-muted-foreground">{t("enquire_prompt")}</p>
                 <Link href="/contact" onClick={onClose}>
                   <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gold-glow tracking-wider">
                     {t("enquire")} <ArrowRight className="ml-2 w-4 h-4" />
@@ -122,7 +122,8 @@ function ProductModal({ product, onClose }: { product: ProductItem; onClose: () 
 }
 
 /* ── Product card ── */
-function ProductCard({ product, onSelect }: { product: ProductItem; onSelect: (p: ProductItem) => void }) {
+export function ProductCard({ product, onSelect }: { product: ProductItem; onSelect: (p: ProductItem) => void }) {
+  const t = useTranslations("collections");
   return (
     <button onClick={() => onSelect(product)}
       className="group text-left rounded-xl overflow-hidden border border-border bg-card hover:border-primary/40 hover:shadow-md transition-all duration-200 w-full">
@@ -138,11 +139,11 @@ function ProductCard({ product, onSelect }: { product: ProductItem; onSelect: (p
         )}
         {product.featured && (
           <div className="absolute top-2 left-2">
-            <span className="bg-primary text-primary-foreground text-[10px] font-semibold px-2 py-0.5 rounded-full tracking-wide">แนะนำ</span>
+            <span className="bg-primary text-primary-foreground text-[10px] font-semibold px-2 py-0.5 rounded-full tracking-wide">{t("featured_badge")}</span>
           </div>
         )}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200 flex items-center justify-center">
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white text-xs px-3 py-1.5 rounded-full">ดูรายละเอียด</span>
+          <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white text-xs px-3 py-1.5 rounded-full">{t("view_details")}</span>
         </div>
       </div>
       <div className="p-3.5">
@@ -164,10 +165,10 @@ function FeaturedSection({ products, onSelect }: { products: ProductItem[]; onSe
       <div ref={ref} className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.55 }} className="flex items-end justify-between mb-8">
           <div>
-            <p className="text-primary text-xs font-semibold uppercase tracking-[0.25em] mb-2">Editor's Pick</p>
-            <h2 className="text-3xl md:text-4xl font-light text-foreground">สินค้า<span className="gold-text font-semibold italic">แนะนำ</span></h2>
+            <p className="text-primary text-xs font-semibold uppercase tracking-[0.25em] mb-2">{t("picks_label")}</p>
+            <h2 className="text-3xl md:text-4xl font-light text-foreground">{t("picks_heading_a")}<span className="gold-text font-semibold italic">{t("picks_heading_b")}</span></h2>
           </div>
-          <p className="text-sm text-muted-foreground hidden sm:block">{products.length} รายการ คัดสรรโดยทีมงาน</p>
+          <p className="text-sm text-muted-foreground hidden sm:block">{t("picks_count", { count: products.length })}</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1, duration: 0.55 }}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -179,8 +180,9 @@ function FeaturedSection({ products, onSelect }: { products: ProductItem[]; onSe
 }
 
 /* ── Category grid within a line section ── */
-function CategoryGrid({ category, products, onSelect, anchorId }: { category: string; products: CategoryProducts; onSelect: (p: ProductItem) => void; anchorId?: boolean }) {
+export function CategoryGrid({ category, products, onSelect, anchorId }: { category: string; products: CategoryProducts; onSelect: (p: ProductItem) => void; anchorId?: boolean }) {
   const [showAll, setShowAll] = useState(false);
+  const t = useTranslations("collections");
   const { preview, rest } = products;
   const total = preview.length + rest.length;
   if (total === 0) return null;
@@ -190,7 +192,7 @@ function CategoryGrid({ category, products, onSelect, anchorId }: { category: st
     <div id={anchorId ? category : undefined} className="mb-12 last:mb-0 scroll-mt-24">
       <div className="flex items-center gap-3 mb-5">
         <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">{CAT_LABELS[category] ?? category}</h3>
-        <span className="text-xs text-muted-foreground">({total} รายการ)</span>
+        <span className="text-xs text-muted-foreground">{t("item_count", { count: total })}</span>
         <div className="flex-1 h-px bg-border" />
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -201,7 +203,7 @@ function CategoryGrid({ category, products, onSelect, anchorId }: { category: st
           <button onClick={() => setShowAll(true)}
             className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 border border-primary/30 hover:border-primary/60 hover:bg-primary/5 px-5 py-2 rounded-full transition-all">
             <ChevronDown className="w-4 h-4" />
-            ดูเพิ่มเติม {rest.length} รายการ
+            {t("show_more", { count: rest.length })}
           </button>
         </div>
       )}

@@ -4,9 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function Gallery({ images }: { images: string[] }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const t = useTranslations("projects");
 
   const prev = useCallback(() => {
     setLightbox((i) => (i === null ? null : (i - 1 + images.length) % images.length));
@@ -40,7 +42,7 @@ export function Gallery({ images }: { images: string[] }) {
             <div className="relative w-full overflow-hidden">
               <Image
                 src={src}
-                alt={`รูปที่ ${i + 1}`}
+                alt={t("photo_alt", { n: i + 1 })}
                 width={800}
                 height={600}
                 className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
@@ -95,7 +97,7 @@ export function Gallery({ images }: { images: string[] }) {
             >
               <Image
                 src={images[lightbox]}
-                alt={`รูปที่ ${lightbox + 1}`}
+                alt={t("photo_alt", { n: lightbox + 1 })}
                 width={1200}
                 height={900}
                 className="w-full h-full object-contain max-h-[85vh] rounded-lg"

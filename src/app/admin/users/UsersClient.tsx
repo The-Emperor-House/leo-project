@@ -29,7 +29,8 @@ function UserDrawer({ user, onClose }: { user: User | null; onClose: () => void 
     const fd = new FormData(e.currentTarget);
     startTransition(async () => {
       try {
-        await upsertUser(fd);
+        const res = await upsertUser(fd);
+        if (res.error) { setError(res.error); return; }
         router.refresh();
         onClose();
       } catch (err) {
@@ -127,7 +128,8 @@ export function UsersClient({ users }: { users: User[] }) {
     startTransition(async () => {
       const fd = new FormData();
       fd.append("id", id);
-      await deleteUser(fd);
+      const res = await deleteUser(fd);
+      if (res.error) { alert(res.error); return; }
       router.refresh();
     });
   }

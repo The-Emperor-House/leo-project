@@ -11,6 +11,12 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+# .env files are excluded from the build context; pages that query the DB are
+# prerendered at build time, so pass the database URL in as a build arg.
+ARG DATABASE_URL
+ARG DIRECT_URL
+ENV DATABASE_URL=$DATABASE_URL
+ENV DIRECT_URL=$DIRECT_URL
 RUN npx prisma generate
 RUN npm run build
 

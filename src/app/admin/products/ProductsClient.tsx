@@ -11,8 +11,10 @@ import { Pagination } from "@/components/Pagination";
 type Product = {
   id: string; title: string; line: string; category: string; description: string;
   imageUrl: string | null; images: string | null;
-  featured: boolean; published: boolean; order: number;
+  featured: boolean; published: boolean; order: number; roomIds: string[];
 };
+
+type RoomOption = { id: string; nameTh: string; nameEn: string };
 
 const LINES = [
   { value: "classic", label: "Classic" },
@@ -74,7 +76,7 @@ function ImageSlot({ url, uploading, onUpload, onRemove, onCancel }: {
   );
 }
 
-function ProductDrawer({ product, onClose }: { product: Product | null; onClose: () => void }) {
+function ProductDrawer({ product, rooms, onClose }: { product: Product | null; rooms: RoomOption[]; onClose: () => void }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [title, setTitle] = useState(product?.title ?? "");
@@ -86,6 +88,7 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
   const [order, setOrder] = useState(product?.order ?? 0);
   const [mainImage, setMainImage] = useState(product?.imageUrl ?? "");
   const [gallery, setGallery] = useState<string[]>(product?.images ? JSON.parse(product.images) : []);
+  const [roomIds, setRoomIds] = useState<string[]>(product?.roomIds ?? []);
   const [uploadingMain, setUploadingMain] = useState(false);
   const [uploadingIdx, setUploadingIdx] = useState<number | null>(null);
   const uploadTokens = useRef<Record<string, number>>({});
@@ -126,6 +129,7 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
     const fd = new FormData(e.currentTarget);
     if (mainImage) fd.set("imageUrl", mainImage);
     gallery.filter(Boolean).forEach((u) => fd.append("images", u));
+    roomIds.forEach((id) => fd.append("roomIds", id));
     startTransition(async () => { await upsertProduct(fd); router.refresh(); onClose(); });
   }
 
@@ -172,6 +176,26 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
                 {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
             </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">ห้อง <span className="text-muted-foreground font-normal">(เลือกได้หลายห้อง)</span></label>
+            {rooms.length === 0 ? (
+              <p className="text-xs text-muted-foreground">ยังไม่มีห้อง — เพิ่มได้ที่เมนู <Link href="/admin/rooms" className="text-primary underline">Rooms</Link></p>
+            ) : (
+              <div className="flex flex-wrap gap-1.5">
+                {rooms.map((r) => {
+                  const on = roomIds.includes(r.id);
+                  return (
+                    <button key={r.id} type="button"
+                      onClick={() => setRoomIds((prev) => on ? prev.filter((id) => id !== r.id) : [...prev, r.id])}
+                      className={`px-3 py-1 rounded-full text-xs border transition-colors ${on ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:bg-secondary"}`}>
+                      {r.nameTh}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -235,9 +259,10 @@ function ProductDrawer({ product, onClose }: { product: Product | null; onClose:
 }
 
 export function ProductsClient({
-  products, total, page, totalPages, currentLine, currentCategory, lineCounts, catCounts,
+  products, rooms, total, page, totalPages, currentLine, currentCategory, lineCounts, catCounts,
 }: {
   products: Product[];
+  rooms: RoomOption[];
   total: number;
   page: number;
   totalPages: number;
@@ -251,6 +276,7 @@ export function ProductsClient({
   const [isPending, startTransition] = useTransition();
 
   const totalAll = Object.values(lineCounts).reduce((s, n) => s + n, 0);
+  const roomName = new Map(rooms.map((r) => [r.id, r.nameTh]));
   const catTotal = Object.values(catCounts).reduce((s, n) => s + n, 0);
 
   function handleDelete(id: string) {
@@ -331,7 +357,14 @@ export function ProductsClient({
                         : <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-4 h-4 text-muted-foreground" /></div>}
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-medium">{p.title}</td>
+                  <td className="px-4 py-3">
+                    <p className="font-medium">{p.title}</p>
+                    {p.roomIds.length > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        {p.roomIds.map((id) => roomName.get(id)).filter(Boolean).join(" · ")}
+                      </p>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${p.line === "luxury" ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground"}`}>
                       {LINE_LABEL[p.line] ?? p.line}
@@ -370,7 +403,7 @@ export function ProductsClient({
       />
 
       {drawer !== null && (
-        <ProductDrawer product={drawer === "new" ? null : drawer} onClose={() => setDrawer(null)} />
+        <ProductDrawer product={drawer === "new" ? null : drawer} rooms={rooms} onClose={() => setDrawer(null)} />
       )}
     </>
   );

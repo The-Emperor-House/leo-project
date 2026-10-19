@@ -1,5 +1,11 @@
 import type { NextAuthConfig } from "next-auth";
 
+export const ADMIN_ROLES = ["ADMIN", "SUPER_ADMIN"];
+
+export function isAdminRole(role: unknown): boolean {
+  return typeof role === "string" && ADMIN_ROLES.includes(role);
+}
+
 export const authConfig: NextAuthConfig = {
   providers: [],
   callbacks: {

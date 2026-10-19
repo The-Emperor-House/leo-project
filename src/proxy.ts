@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import { authConfig } from "@/lib/auth.config";
+import { authConfig, isAdminRole } from "@/lib/auth.config";
 import createIntlMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
 import { routing } from "@/i18n/routing";
@@ -19,7 +19,7 @@ export default auth((req) => {
       return NextResponse.redirect(url);
     }
     const role = (req.auth.user as { role?: string })?.role;
-    if (role !== "ADMIN") {
+    if (!isAdminRole(role)) {
       return NextResponse.redirect(new URL("/", req.url));
     }
     return NextResponse.next();

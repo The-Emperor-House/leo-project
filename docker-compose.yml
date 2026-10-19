@@ -1,16 +1,22 @@
 services:
   web:
-    build: .
+    build:
+      context: .
+      args:
+        # Required only for `docker compose build`: a database reachable at build time
+        DATABASE_URL: ${BUILD_DATABASE_URL:-}
+        DIRECT_URL: ${BUILD_DATABASE_URL:-}
     container_name: leo-web
     ports:
-      - "3003:3000"
+      # 3003 is used by `npm run dev`
+      - "3103:3000"
     environment:
       DATABASE_URL: postgresql://leoangelo:leopass@db:5432/leoangelo
       DIRECT_URL: postgresql://leoangelo:leopass@db:5432/leoangelo
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3003}
+      NEXTAUTH_URL: ${DOCKER_APP_URL:-http://localhost:3103}
       AUTH_SECRET: ${NEXTAUTH_SECRET}
-      AUTH_URL: ${NEXTAUTH_URL:-http://localhost:3003}
+      AUTH_URL: ${DOCKER_APP_URL:-http://localhost:3103}
       AUTH_TRUST_HOST: "1"
     depends_on:
       db:

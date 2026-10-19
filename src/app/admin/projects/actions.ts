@@ -1,10 +1,13 @@
 "use server";
 
+import { collectImageUrls, deleteCloudinaryImages } from "@/lib/cloudinary-cleanup";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/require-admin";
+import { revalidateLocalized } from "@/lib/revalidate";
 import { revalidatePath } from "next/cache";
 
-
 export async function upsertProject(formData: FormData) {
+  await requireAdmin();
   const id = formData.get("id") as string | null;
   const images = formData.getAll("images") as string[];
   const data = {
@@ -20,16 +23,22 @@ export async function upsertProject(formData: FormData) {
     order: Number(formData.get("order") ?? 0),
   };
   if (id) {
-    await prisma.project.update({ where: { id }, data });
+    const before = await prisma.project.findUniqueOrThrow({ where: { id } });
+    const after = await prisma.project.update({ where: { id }, data });
+    const kept = new Set(collectImageUrls(after, "coverImage"));
+    await deleteCloudinaryImages(collectImageUrls(before, "coverImage").filter((u) => !kept.has(u)));
+    revalidateLocalized(`/projects/${before.slug}`);
   } else {
     await prisma.project.create({ data });
   }
   revalidatePath("/admin/projects");
-  revalidatePath("/projects");
+  revalidateLocalized("/projects", `/projects/${data.slug}`);
 }
 
 export async function deleteProject(formData: FormData) {
-  await prisma.project.delete({ where: { id: formData.get("id") as string } });
+  await requireAdmin();
+  const project = await prisma.project.delete({ where: { id: formData.get("id") as string } });
+  await deleteCloudinaryImages(collectImageUrls(project, "coverImage"));
   revalidatePath("/admin/projects");
-  revalidatePath("/projects");
+  revalidateLocalized("/projects", `/projects/${project.slug}`);
 }

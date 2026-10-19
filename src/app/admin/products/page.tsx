@@ -18,10 +18,11 @@ export default async function ProductsPage({
     ...(category ? { category } : {}),
   };
 
-  const [products, total, lineGroups, categoryGroups] = await Promise.all([
+  const [products, total, lineGroups, categoryGroups, rooms] = await Promise.all([
     prisma.product.findMany({
       where,
       orderBy: [{ line: "asc" }, { category: "asc" }, { order: "asc" }],
+      include: { rooms: { select: { id: true } } },
       skip: (page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
     }),
@@ -32,6 +33,10 @@ export default async function ProductsPage({
       where: line ? { line } : {},
       _count: { id: true },
     }),
+    prisma.room.findMany({
+      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+      select: { id: true, nameTh: true, nameEn: true },
+    }),
   ]);
 
   const lineCounts = Object.fromEntries(lineGroups.map((g) => [g.line, g._count.id]));
@@ -39,7 +44,8 @@ export default async function ProductsPage({
 
   return (
     <ProductsClient
-      products={products}
+      products={products.map(({ rooms, ...p }) => ({ ...p, roomIds: rooms.map((r) => r.id) }))}
+      rooms={rooms}
       total={total}
       page={page}
       totalPages={Math.ceil(total / PAGE_SIZE)}
